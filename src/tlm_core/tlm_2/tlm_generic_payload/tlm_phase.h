@@ -77,7 +77,7 @@ tlm_phase& tlm_phase::operator=( tlm_phase_enum standard )
 }
 
 inline
-std::ostream& operator<<(std::ostream& s, const tlm_phase& p)
+std::ostream& operator<<(std::ostream& s, tlm::tlm_phase p)
 {
   s << p.get_name();
   return s;

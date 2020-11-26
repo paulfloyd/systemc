@@ -40,9 +40,6 @@ namespace sc_core {
 //  Unique name generator class.
 // ----------------------------------------------------------------------------
 
-sc_name_gen::sc_name_gen() : m_unique_name_map(), m_unique_name()
-{}
-
 sc_name_gen::~sc_name_gen()
 {
     sc_strhash<int*>::iterator it( m_unique_name_map );
@@ -58,12 +55,12 @@ sc_name_gen::~sc_name_gen()
 const char*
 sc_name_gen::gen_unique_name( const char* basename_, bool preserve_first )
 {
-    if( basename_ == 0 || *basename_ == 0 ) {
-        SC_REPORT_ERROR( SC_ID_GEN_UNIQUE_NAME_, 0 );
+    if( basename_ == nullptr || *basename_ == 0 ) {
+        SC_REPORT_ERROR( SC_ID_GEN_UNIQUE_NAME_, nullptr );
         basename_ = "unnamed"; // usually not reached
     }
     int* c = m_unique_name_map[basename_];
-    if( c == 0 ) {
+    if( c == nullptr ) {
         c = new int( 0 );
         m_unique_name_map.insert( const_cast<char*>( basename_ ), c );
         if (preserve_first) {

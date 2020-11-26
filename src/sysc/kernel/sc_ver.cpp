@@ -90,7 +90,7 @@ SC_API void
 pln()
 {
     static bool lnp = SC_DISABLE_COPYRIGHT_MESSAGE;
-    if ( lnp || getenv("SYSTEMC_DISABLE_COPYRIGHT_MESSAGE") != 0 ) 
+    if ( lnp || getenv("SYSTEMC_DISABLE_COPYRIGHT_MESSAGE") != nullptr ) 
         lnp = true;
     if ( const char * lnp_env = getenv("SC_COPYRIGHT_MESSAGE") ) {
         lnp = !strcmp( lnp_env, "DISABLE" );
@@ -111,7 +111,7 @@ pln()
 
         //  regressions check point
 
-        if( getenv( "SYSTEMC_REGRESSION" ) != 0 ) {
+        if( getenv( "SYSTEMC_REGRESSION" ) != nullptr ) {
             cerr << "SystemC Simulation" << endl;
         }
 
@@ -126,7 +126,7 @@ pln()
     if( ! SC_CONCAT_UNDERSCORE_( Name, config_seen ) ) { \
       SC_CONCAT_UNDERSCORE_( Name, config_seen ) = true; \
       SC_CONCAT_UNDERSCORE_( Name, config ) = Name; \
-    } else if( SC_CONCAT_UNDERSCORE_( Name, config ) != Name ) { \
+    } else if( SC_CONCAT_UNDERSCORE_( Name, config ) != (Name) ) { \
       SC_REPORT_FATAL( SC_ID_INCONSISTENT_API_CONFIG_, Symbol ); \
       /* may continue, if suppressed */ \
     } \

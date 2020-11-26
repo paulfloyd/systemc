@@ -41,13 +41,13 @@ namespace sc_core {
 
 sc_mutex::sc_mutex()
 : sc_object( sc_gen_unique_name( "mutex" ) ),
-  m_owner( 0 ),
+  m_owner( nullptr ),
   m_free( sc_event::kernel_event, "free_event" )
 {}
 
 sc_mutex::sc_mutex( const char* name_ )
 : sc_object( name_ ),
-  m_owner( 0 ),
+  m_owner( nullptr ),
   m_free( sc_event::kernel_event, "free_event" )
 {}
 
@@ -55,7 +55,7 @@ sc_mutex::sc_mutex( const char* name_ )
 // destructor
 
 sc_mutex::~sc_mutex()
-{}
+= default;
 
 // interface methods
 
@@ -95,7 +95,7 @@ sc_mutex::unlock()
     if( m_owner != sc_get_current_process_b() ) {
 	return -1;
     }
-    m_owner = 0;
+    m_owner = nullptr;
     m_free.notify();
     return 0;
 }

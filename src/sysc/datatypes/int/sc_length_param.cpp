@@ -68,7 +68,7 @@ template class SC_API sc_context<sc_length_param>;
 //  Length parameter type.
 // ----------------------------------------------------------------------------
 
-const std::string
+std::string
 sc_length_param::to_string() const
 {
     std::stringstream ss;

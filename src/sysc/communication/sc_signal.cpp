@@ -83,12 +83,12 @@ sc_writer_policy_check_port::
          !sc_get_curr_simcontext()->write_check_conflicts_only() )
     {
         // an out or inout port; only one can be connected
-        if( m_output != 0) {
+        if( m_output != nullptr) {
             sc_signal_invalid_writer( target, m_output, port_, false );
             return false;
-        } else {
+        } 
             m_output = port_;
-        }
+        
     }
     return true;
 }

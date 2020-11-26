@@ -152,13 +152,13 @@ sc_signed_subref_r::to_string( sc_numrep numrep, bool w_prefix ) const
 
 // assignment operators
 
-const sc_signed_subref&
+sc_signed_subref&
 sc_signed_subref::operator = ( const sc_signed_subref_r& a )
 {
     return operator = ( (sc_unsigned)( a ) );
 }
 
-const sc_signed_subref& 
+sc_signed_subref&
 sc_signed_subref::operator = ( const sc_signed_subref& v )
 {
     if( this == &v ) {
@@ -167,7 +167,7 @@ sc_signed_subref::operator = ( const sc_signed_subref& v )
     return operator = ( (sc_unsigned)( v ) ); 
 }
 
-const sc_signed_subref& 
+sc_signed_subref&
 sc_signed_subref::operator = ( const sc_signed& v )
 {
     int i;
@@ -179,13 +179,13 @@ sc_signed_subref::operator = ( const sc_signed& v )
     return *this;
 } 
 
-const sc_signed_subref& 
+sc_signed_subref&
 sc_signed_subref::operator = ( const sc_unsigned_subref_r& v )
 {
     return operator = ( (sc_unsigned)( v ) );
 }
 
-const sc_signed_subref& 
+sc_signed_subref&
 sc_signed_subref::operator = ( const sc_unsigned& v )
 {
     int i;

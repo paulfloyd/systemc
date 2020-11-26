@@ -53,7 +53,7 @@ class SC_API sc_attr_base
 public:
 
     // constructors
-    sc_attr_base( const std::string& name_ );
+    sc_attr_base( std::string  name_ );
     sc_attr_base( const sc_attr_base& );
 
     // destructor (does nothing)

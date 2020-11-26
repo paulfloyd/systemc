@@ -59,7 +59,7 @@ class SC_API sc_cor
 protected:
 
     // constructor
-    sc_cor() {}
+    sc_cor() = default;
 
 public:
 

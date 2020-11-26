@@ -314,7 +314,7 @@ SC_API void sc_trace( sc_trace_file* tf,
 
 SC_API void
 sc_trace( sc_trace_file* tf,
-	  const unsigned int& object,
+	  unsigned int object,
 	  const std::string& name,
 	  const char** enum_literals );
 

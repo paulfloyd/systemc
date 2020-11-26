@@ -101,7 +101,7 @@ private:
 
 sc_allocator::sc_allocator( int blksz, int cellsz )
   : block_size(sizeof(link) + (((blksz - 1) / cellsz) + 1) * cellsz),
-    cell_size(cellsz), block_list(0), free_list(0), next_avail(0),
+    cell_size(cellsz), block_list(nullptr), free_list(nullptr), next_avail(nullptr),
     total_alloc(0), total_freed(0), free_list_alloc(0)
 {}
 
@@ -115,23 +115,23 @@ sc_allocator::~sc_allocator()
 void*
 sc_allocator::allocate()
 {
-    void* result = 0;
+    void* result = nullptr;
     total_alloc++;
-    if (free_list != 0) {
+    if (free_list != nullptr) {
         free_list_alloc++;
         result = free_list;
         free_list = free_list->next;
         return result;
     }
-    else if (next_avail != 0) {
+    if (next_avail != nullptr) {
         result = next_avail;
         next_avail += cell_size;
         // next_avail goes beyond the block
         if (next_avail >= block_list + block_size)
-            next_avail = 0;
+            next_avail = nullptr;
         return result;
     }
-    else {  // (next_avail == 0)
+     // (next_avail == 0)
         link* new_block = (link*) std::malloc(block_size);  // need alignment?
         new_block->next = (link*) block_list;
         block_list = (char*) new_block;
@@ -140,7 +140,7 @@ sc_allocator::allocate()
         // wouldn't it?
         next_avail = ((char*) result) + cell_size;
         return result;
-    }
+    
 }
 
 void
@@ -155,7 +155,7 @@ void
 sc_allocator::display_statistics()
 {
     int nblocks = 0;
-    for (link* b = (link*) block_list; b != 0; b = b->next)
+    for (link* b = (link*) block_list; b != nullptr; b = b->next)
         nblocks++;
     printf("size %3d: %2d block(s), %3d requests (%3d from free list), %3d freed.\n",
            cell_size, nblocks, total_alloc, free_list_alloc, total_freed);
@@ -219,11 +219,11 @@ static bool
 compute_use_default_new()
 {
     const char* e = getenv(dont_use_envstring);
-    return (e != 0) && (atoi(e) != 0);
+    return (e != nullptr) && (atoi(e) != 0);
 }
 
 sc_mempool_int::sc_mempool_int(int blksz, int npools, int incr) :
-    allocators(0), num_pools(0), increment(0), max_size(0)
+    allocators(nullptr), num_pools(0), increment(0), max_size(0)
 {
     use_default_new = compute_use_default_new();
     if (! use_default_new) {
@@ -244,7 +244,7 @@ sc_mempool_int::~sc_mempool_int()
     delete[] allocators;
 }
 
-static sc_mempool_int* the_mempool = 0;
+static sc_mempool_int* the_mempool = nullptr;
 
 void*
 sc_mempool_int::do_allocate(std::size_t sz)
@@ -277,7 +277,7 @@ sc_mempool::allocate(std::size_t sz)
     if (use_default_new)
         return ::operator new(sz);
 
-    if (the_mempool == 0) {
+    if (the_mempool == nullptr) {
         use_default_new = compute_use_default_new();
         if (use_default_new)
             return ::operator new(sz);

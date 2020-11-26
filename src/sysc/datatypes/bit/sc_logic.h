@@ -64,6 +64,7 @@
 
 
 #include <cstdio>
+#include <array>
 #include "sysc/kernel/sc_cmnhdr.h"
 #include "sysc/kernel/sc_macros.h"
 #include "sysc/utils/sc_mempool.h"
@@ -150,11 +151,11 @@ public:
     // conversion tables
 
     static const sc_logic_value_t char_to_logic[128];
-    static const char logic_to_char[4];
+    static const std::array<char, 4> logic_to_char;
     static const sc_logic_value_t and_table[4][4];
     static const sc_logic_value_t or_table[4][4];
     static const sc_logic_value_t xor_table[4][4];
-    static const sc_logic_value_t not_table[4];
+    static const std::array<sc_logic_value_t, 4> not_table;
 
 
     // constructors

@@ -382,7 +382,7 @@ private:
 
     class process_handle_list {
     public:
-      process_handle_list() {}
+      process_handle_list() = default;
 
       ~process_handle_list() {
         for( typename std::vector<process_handle_class*>::iterator
@@ -934,7 +934,7 @@ private:
 
     class process_handle_list {
     public:
-      process_handle_list() {}
+      process_handle_list() =default;
 
       ~process_handle_list() {
         for( typename std::vector<process_handle_class*>::iterator

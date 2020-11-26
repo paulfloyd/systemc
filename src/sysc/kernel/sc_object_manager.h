@@ -85,7 +85,7 @@ public:
     sc_object* first_object();
     sc_object* next_object();
 
-    void hierarchy_push(sc_object* mdl);
+    void hierarchy_push(sc_object* object_p);
     sc_object* hierarchy_pop();
     sc_object* hierarchy_curr();
     int hierarchy_size();
@@ -97,7 +97,7 @@ public:
 
 private:
     std::string create_name( const char* leaf_name );
-    void insert_event(const std::string& name, sc_event* obj);
+    void insert_event(const std::string& name, sc_event* event_p);
     void insert_object(const std::string& name, sc_object* obj);
     bool insert_external_name(const std::string& name);
     void remove_event(const std::string& name);

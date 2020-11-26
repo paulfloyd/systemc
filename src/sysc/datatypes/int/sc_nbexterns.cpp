@@ -170,7 +170,7 @@ mul_on_help_signed(small_type &us,
 #ifdef SC_MAX_NBITS
     sc_digit d[MAX_NDIGITS];
 #else
-    sc_digit *d = new sc_digit[nd];
+    auto *d = new sc_digit[nd];
 #endif
   
     vec_zero(nd, d);
@@ -245,7 +245,7 @@ mul_on_help_unsigned(small_type &us,
 #ifdef SC_MAX_NBITS
     sc_digit d[MAX_NDIGITS];
 #else
-    sc_digit *d = new sc_digit[nd];
+    auto *d = new sc_digit[nd];
 #endif
   
     vec_zero(nd, d);
@@ -318,7 +318,7 @@ div_on_help_signed(small_type &us,
 #ifdef SC_MAX_NBITS
     sc_digit d[MAX_NDIGITS + 1];
 #else
-    sc_digit *d = new sc_digit[nd];
+    auto *d = new sc_digit[nd];
 #endif
     
     vec_zero(nd, d);
@@ -388,7 +388,7 @@ div_on_help_unsigned(small_type &us,
 #ifdef SC_MAX_NBITS
     sc_digit d[MAX_NDIGITS + 1];
 #else
-    sc_digit *d = new sc_digit[nd];
+    auto *d = new sc_digit[nd];
 #endif
     
     vec_zero(nd, d);
@@ -470,7 +470,7 @@ mod_on_help_signed(small_type &us,
 #ifdef SC_MAX_NBITS
     sc_digit d[MAX_NDIGITS + 1];
 #else
-    sc_digit *d = new sc_digit[nd];
+    auto *d = new sc_digit[nd];
 #endif
     
     vec_zero(nd, d);
@@ -548,7 +548,7 @@ mod_on_help_unsigned(small_type &us,
 #ifdef SC_MAX_NBITS
     sc_digit d[MAX_NDIGITS + 1];
 #else
-    sc_digit *d = new sc_digit[nd];
+    auto *d = new sc_digit[nd];
 #endif
     
     vec_zero(nd, d);

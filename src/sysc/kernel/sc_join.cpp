@@ -59,8 +59,8 @@ sc_join::sc_join()
 //------------------------------------------------------------------------------
 void sc_join::add_process( sc_process_b* process_p )
 {
-    sc_thread_handle handle = dynamic_cast<sc_thread_handle>(process_p);
-    sc_assert( handle != 0 );
+    auto handle = dynamic_cast<sc_thread_handle>(process_p);
+    sc_assert( handle != nullptr );
     m_threads_n++;
     handle->add_monitor( this );
 }
@@ -86,7 +86,7 @@ void sc_join::add_process( sc_process_handle process_h )
     }
     else
     {
-        SC_REPORT_ERROR( SC_ID_JOIN_ON_METHOD_HANDLE_, 0 );
+        SC_REPORT_ERROR( SC_ID_JOIN_ON_METHOD_HANDLE_, nullptr );
     }
 }
 

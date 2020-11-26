@@ -59,8 +59,7 @@ protected:
 
     // constructor
 
-    sc_mutex_if()
-	{}
+    sc_mutex_if() = default;
 
 private:
 

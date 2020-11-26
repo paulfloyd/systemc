@@ -92,7 +92,7 @@ enum sc_descendant_inclusion_info {
 class SC_API sc_process_host
 {
   public:
-    sc_process_host() {}
+    sc_process_host() = default;
     virtual ~sc_process_host() { } // Needed for cast check for sc_module.
     void defunct() {}
 };
@@ -233,7 +233,7 @@ class SC_API sc_throw_it_helper {
   public:
     virtual sc_throw_it_helper* clone() const = 0;
     virtual void throw_it() = 0;
-    sc_throw_it_helper() {}
+    sc_throw_it_helper() = default;
     virtual ~sc_throw_it_helper() {}
 };
 

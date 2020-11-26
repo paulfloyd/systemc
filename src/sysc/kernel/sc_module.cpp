@@ -64,8 +64,7 @@ class sc_module_dynalloc_list
 {
 public:
 
-    sc_module_dynalloc_list() : m_list()
-        {}
+    sc_module_dynalloc_list() = default;
 
     ~sc_module_dynalloc_list();
 
@@ -90,7 +89,7 @@ sc_module_dynalloc_list::~sc_module_dynalloc_list()
 {
     sc_plist<sc_module*>::iterator it( m_list );
     while( ! it.empty() ) {
-        (*it)->m_parent = 0;
+        (*it)->m_parent = nullptr;
         delete *it;
         it ++;
     }
@@ -116,17 +115,17 @@ sc_module_dynalloc( sc_module* module_ )
 // ----------------------------------------------------------------------------
     
 sc_bind_proxy::sc_bind_proxy()
-: iface( 0 ),
-  port( 0 )
+: iface( nullptr ),
+  port( nullptr )
 {}
 
 sc_bind_proxy::sc_bind_proxy( sc_interface& iface_ )
 : iface( &iface_ ),
-  port( 0 )
+  port( nullptr )
 {}
 
 sc_bind_proxy::sc_bind_proxy( sc_port_base& port_ )
-: iface( 0 ),
+: iface( nullptr ),
   port( &port_ )
 {}
 
@@ -146,7 +145,7 @@ sc_module::sc_module_init()
     simcontext()->get_module_registry()->insert( *this );
     simcontext()->hierarchy_push( this );
     m_end_module_called = false;
-    m_module_name_p = 0;
+    m_module_name_p = nullptr;
     m_port_vec = new std::vector<sc_port_base*>;
     m_port_index = 0;
 }
@@ -182,15 +181,15 @@ sc_module::sc_module()
   m_end_module_called(false),
   m_port_vec(),
   m_port_index(0),
-  m_name_gen(0),
-  m_module_name_p(0)
+  m_name_gen(nullptr),
+  m_module_name_p(nullptr)
 {
     /* When this form is used, we better have a fresh sc_module_name
        on the top of the stack */
     sc_module_name* mod_name = 
         simcontext()->get_object_manager()->top_of_module_name_stack();
-    if (0 == mod_name || 0 != mod_name->m_module_p) {
-        SC_REPORT_ERROR( SC_ID_SC_MODULE_NAME_REQUIRED_, 0 );
+    if (nullptr == mod_name || nullptr != mod_name->m_module_p) {
+        SC_REPORT_ERROR( SC_ID_SC_MODULE_NAME_REQUIRED_, nullptr );
         sc_abort(); // can't recover from here
     }
     sc_module_init();
@@ -209,8 +208,8 @@ sc_module::sc_module( const sc_module_name& )
   m_end_module_called(false),
   m_port_vec(),
   m_port_index(0),
-  m_name_gen(0),
-  m_module_name_p(0)
+  m_name_gen(nullptr),
+  m_module_name_p(nullptr)
 {
     /* For those used to the old style of passing a name to sc_module,
        this constructor will reduce the chance of making a mistake */
@@ -219,8 +218,8 @@ sc_module::sc_module( const sc_module_name& )
        on the top of the stack */
     sc_module_name* mod_name = 
         simcontext()->get_object_manager()->top_of_module_name_stack();
-    if (0 == mod_name || 0 != mod_name->m_module_p) {
-        SC_REPORT_ERROR( SC_ID_SC_MODULE_NAME_REQUIRED_, 0 );
+    if (nullptr == mod_name || nullptr != mod_name->m_module_p) {
+        SC_REPORT_ERROR( SC_ID_SC_MODULE_NAME_REQUIRED_, nullptr );
         sc_abort(); // can't recover from here
     }
     sc_module_init();
@@ -242,8 +241,8 @@ sc_module::sc_module( const char* nm )
   m_end_module_called(false),
   m_port_vec(),
   m_port_index(0),
-  m_name_gen(0),
-  m_module_name_p(0)
+  m_name_gen(nullptr),
+  m_module_name_p(nullptr)
 {
     SC_REPORT_WARNING( SC_ID_BAD_SC_MODULE_CONSTRUCTOR_, nm );
     sc_module_init();
@@ -257,8 +256,8 @@ sc_module::sc_module( const std::string& s )
   m_end_module_called(false),
   m_port_vec(),
   m_port_index(0),
-  m_name_gen(0),
-  m_module_name_p(0)
+  m_name_gen(nullptr),
+  m_module_name_p(nullptr)
 {
     SC_REPORT_WARNING( SC_ID_BAD_SC_MODULE_CONSTRUCTOR_, s.c_str() );
     sc_module_init();
@@ -324,7 +323,7 @@ sc_module::end_module()
 	sensitive_pos.reset();
 	sensitive_neg.reset();
 	m_end_module_called = true;
-	m_module_name_p = 0; // make sure we are not called in ~sc_module().
+	m_module_name_p = nullptr; // make sure we are not called in ~sc_module().
     }
 }
 
@@ -408,7 +407,7 @@ sc_module::elaboration_done( bool& error_ )
         msg << "module '" << name() << "'";
         SC_REPORT_WARNING( SC_ID_END_MODULE_NOT_CALLED_, msg.str().c_str() );
         if( error_ ) {
-            SC_REPORT_WARNING( SC_ID_HIER_NAME_INCORRECT_, 0 );
+            SC_REPORT_WARNING( SC_ID_HIER_NAME_INCORRECT_, nullptr );
         }
         error_ = true;
     }
@@ -460,7 +459,7 @@ sc_module::set_stack_size( std::size_t size )
     }
     else
     {
-	SC_REPORT_WARNING( SC_ID_SET_STACK_SIZE_, 0 );
+	SC_REPORT_WARNING( SC_ID_SET_STACK_SIZE_, nullptr );
     }
 }
 
@@ -584,70 +583,70 @@ sc_module::positional_bind( sc_port_base& port_ )
 
 
 void
-sc_module::operator () ( const sc_bind_proxy& p001,
-			 const sc_bind_proxy& p002,
-			 const sc_bind_proxy& p003,
-			 const sc_bind_proxy& p004,
-			 const sc_bind_proxy& p005,
-			 const sc_bind_proxy& p006,
-			 const sc_bind_proxy& p007,
-			 const sc_bind_proxy& p008,
-			 const sc_bind_proxy& p009,
-			 const sc_bind_proxy& p010,
-			 const sc_bind_proxy& p011,
-			 const sc_bind_proxy& p012,
-			 const sc_bind_proxy& p013,
-			 const sc_bind_proxy& p014,
-			 const sc_bind_proxy& p015,
-			 const sc_bind_proxy& p016,
-			 const sc_bind_proxy& p017,
-			 const sc_bind_proxy& p018,
-			 const sc_bind_proxy& p019,
-			 const sc_bind_proxy& p020,
-			 const sc_bind_proxy& p021,
-			 const sc_bind_proxy& p022,
-			 const sc_bind_proxy& p023,
-			 const sc_bind_proxy& p024,
-			 const sc_bind_proxy& p025,
-			 const sc_bind_proxy& p026,
-			 const sc_bind_proxy& p027,
-			 const sc_bind_proxy& p028,
-			 const sc_bind_proxy& p029,
-			 const sc_bind_proxy& p030,
-			 const sc_bind_proxy& p031,
-			 const sc_bind_proxy& p032,
-			 const sc_bind_proxy& p033,
-			 const sc_bind_proxy& p034,
-			 const sc_bind_proxy& p035,
-			 const sc_bind_proxy& p036,
-			 const sc_bind_proxy& p037,
-			 const sc_bind_proxy& p038,
-			 const sc_bind_proxy& p039,
-			 const sc_bind_proxy& p040,
-			 const sc_bind_proxy& p041,
-			 const sc_bind_proxy& p042,
-			 const sc_bind_proxy& p043,
-			 const sc_bind_proxy& p044,
-			 const sc_bind_proxy& p045,
-			 const sc_bind_proxy& p046,
-			 const sc_bind_proxy& p047,
-			 const sc_bind_proxy& p048,
-			 const sc_bind_proxy& p049,
-			 const sc_bind_proxy& p050,
-			 const sc_bind_proxy& p051,
-			 const sc_bind_proxy& p052,
-			 const sc_bind_proxy& p053,
-			 const sc_bind_proxy& p054,
-			 const sc_bind_proxy& p055,
-			 const sc_bind_proxy& p056,
-			 const sc_bind_proxy& p057,
-			 const sc_bind_proxy& p058,
-			 const sc_bind_proxy& p059,
-			 const sc_bind_proxy& p060,
-			 const sc_bind_proxy& p061,
-			 const sc_bind_proxy& p062,
-			 const sc_bind_proxy& p063,
-			 const sc_bind_proxy& p064 )
+sc_module::operator () ( sc_core::sc_bind_proxy p001,
+			 sc_core::sc_bind_proxy p002,
+			 sc_core::sc_bind_proxy p003,
+			 sc_core::sc_bind_proxy p004,
+			 sc_core::sc_bind_proxy p005,
+			 sc_core::sc_bind_proxy p006,
+			 sc_core::sc_bind_proxy p007,
+			 sc_core::sc_bind_proxy p008,
+			 sc_core::sc_bind_proxy p009,
+			 sc_core::sc_bind_proxy p010,
+			 sc_core::sc_bind_proxy p011,
+			 sc_core::sc_bind_proxy p012,
+			 sc_core::sc_bind_proxy p013,
+			 sc_core::sc_bind_proxy p014,
+			 sc_core::sc_bind_proxy p015,
+			 sc_core::sc_bind_proxy p016,
+			 sc_core::sc_bind_proxy p017,
+			 sc_core::sc_bind_proxy p018,
+			 sc_core::sc_bind_proxy p019,
+			 sc_core::sc_bind_proxy p020,
+			 sc_core::sc_bind_proxy p021,
+			 sc_core::sc_bind_proxy p022,
+			 sc_core::sc_bind_proxy p023,
+			 sc_core::sc_bind_proxy p024,
+			 sc_core::sc_bind_proxy p025,
+			 sc_core::sc_bind_proxy p026,
+			 sc_core::sc_bind_proxy p027,
+			 sc_core::sc_bind_proxy p028,
+			 sc_core::sc_bind_proxy p029,
+			 sc_core::sc_bind_proxy p030,
+			 sc_core::sc_bind_proxy p031,
+			 sc_core::sc_bind_proxy p032,
+			 sc_core::sc_bind_proxy p033,
+			 sc_core::sc_bind_proxy p034,
+			 sc_core::sc_bind_proxy p035,
+			 sc_core::sc_bind_proxy p036,
+			 sc_core::sc_bind_proxy p037,
+			 sc_core::sc_bind_proxy p038,
+			 sc_core::sc_bind_proxy p039,
+			 sc_core::sc_bind_proxy p040,
+			 sc_core::sc_bind_proxy p041,
+			 sc_core::sc_bind_proxy p042,
+			 sc_core::sc_bind_proxy p043,
+			 sc_core::sc_bind_proxy p044,
+			 sc_core::sc_bind_proxy p045,
+			 sc_core::sc_bind_proxy p046,
+			 sc_core::sc_bind_proxy p047,
+			 sc_core::sc_bind_proxy p048,
+			 sc_core::sc_bind_proxy p049,
+			 sc_core::sc_bind_proxy p050,
+			 sc_core::sc_bind_proxy p051,
+			 sc_core::sc_bind_proxy p052,
+			 sc_core::sc_bind_proxy p053,
+			 sc_core::sc_bind_proxy p054,
+			 sc_core::sc_bind_proxy p055,
+			 sc_core::sc_bind_proxy p056,
+			 sc_core::sc_bind_proxy p057,
+			 sc_core::sc_bind_proxy p058,
+			 sc_core::sc_bind_proxy p059,
+			 sc_core::sc_bind_proxy p060,
+			 sc_core::sc_bind_proxy p061,
+			 sc_core::sc_bind_proxy p062,
+			 sc_core::sc_bind_proxy p063,
+			 sc_core::sc_bind_proxy p064 )
 {
     static bool warn_only_once=true;
     if ( m_port_index > 0 && warn_only_once )

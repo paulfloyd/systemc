@@ -75,7 +75,7 @@ sc_bv_base::init( int length_, bool init_value )
 {
     // check the length
     if( length_ <= 0 ) {
-        SC_REPORT_ERROR( sc_core::SC_ID_ZERO_LENGTH_, 0 );
+        SC_REPORT_ERROR( sc_core::SC_ID_ZERO_LENGTH_, nullptr );
         sc_core::sc_abort(); // can't recover from here
     }
     // allocate memory for the data and control words
@@ -122,7 +122,7 @@ sc_bv_base::assign_from_string( const std::string& s )
 // constructors
 
 sc_bv_base::sc_bv_base( const char* a )
-    : m_len( 0 ), m_size( 0 ), m_data( 0 )
+    : m_len( 0 ), m_size( 0 ), m_data( nullptr )
 {
     std::string s = convert_to_bin( a );
     init( s.length() -  1 );
@@ -130,15 +130,14 @@ sc_bv_base::sc_bv_base( const char* a )
 }
 
 sc_bv_base::sc_bv_base( const char* a, int length_ )
-    : m_len( 0 ), m_size( 0 ), m_data( 0 )
+    : m_len( 0 ), m_size( 0 ), m_data( nullptr )
 {
     init( length_ );
     assign_from_string( convert_to_bin( a ) );
 }
 
 sc_bv_base::sc_bv_base( const sc_bv_base& a )
-    : sc_proxy<sc_bv_base>(),
-      m_len( a.m_len ),
+    : m_len( a.m_len ),
       m_size( a.m_size ),
       m_data( new sc_digit[m_size] )
 {
@@ -164,13 +163,13 @@ sc_bv_base::operator = ( const char* a )
 
 // convert formatted string to binary string
 
-SC_API const std::string
+SC_API std::string
 convert_to_bin( const char* s )
 {
     // Beware: logic character strings cannot start with '0x' or '0X',
     //         because this is seen as a hexadecimal encoding prefix!
 
-    if( s == 0 ) {
+    if( s == nullptr ) {
         SC_REPORT_ERROR(sc_core::SC_ID_CANNOT_CONVERT_,
             "character string is zero" );
         return std::string();
@@ -233,7 +232,7 @@ convert_to_bin( const char* s )
 
 // convert binary string to formatted string
 
-SC_API const std::string
+SC_API std::string
 convert_to_fmt( const std::string& s, sc_numrep numrep, bool w_prefix )
 {
     int n = s.length();

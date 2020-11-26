@@ -376,17 +376,17 @@ public:
 
     // explicit conversion to character string
 
-    const std::string to_string() const;
-    const std::string to_string( sc_numrep ) const;
-    const std::string to_string( sc_numrep, bool ) const;
-    const std::string to_string( sc_fmt ) const;
-    const std::string to_string( sc_numrep, sc_fmt ) const;
-    const std::string to_string( sc_numrep, bool, sc_fmt ) const;
+    std::string to_string() const;
+    std::string to_string( sc_numrep ) const;
+    std::string to_string( sc_numrep, bool ) const;
+    std::string to_string( sc_fmt ) const;
+    std::string to_string( sc_numrep, sc_fmt ) const;
+    std::string to_string( sc_numrep, bool, sc_fmt ) const;
 
-    const std::string to_dec() const;
-    const std::string to_bin() const;
-    const std::string to_oct() const;
-    const std::string to_hex() const;
+    std::string to_dec() const;
+    std::string to_bin() const;
+    std::string to_oct() const;
+    std::string to_hex() const;
 
 
     // query value
@@ -710,17 +710,17 @@ public:
 
     // explicit conversion to character string
 
-    const std::string to_string() const;
-    const std::string to_string( sc_numrep ) const;
-    const std::string to_string( sc_numrep, bool ) const;
-    const std::string to_string( sc_fmt ) const;
-    const std::string to_string( sc_numrep, sc_fmt ) const;
-    const std::string to_string( sc_numrep, bool, sc_fmt ) const;
+    std::string to_string() const;
+    std::string to_string( sc_numrep ) const;
+    std::string to_string( sc_numrep, bool ) const;
+    std::string to_string( sc_fmt ) const;
+    std::string to_string( sc_numrep, sc_fmt ) const;
+    std::string to_string( sc_numrep, bool, sc_fmt ) const;
 
-    const std::string to_dec() const;
-    const std::string to_bin() const;
-    const std::string to_oct() const;
-    const std::string to_hex() const;
+    std::string to_dec() const;
+    std::string to_bin() const;
+    std::string to_oct() const;
+    std::string to_hex() const;
 
 
     // query value

@@ -210,7 +210,7 @@ protected:
   };
 
 public: 
-  void report_empty_bind( const char* kind_, bool dst_range_ ) const;
+  void report_empty_bind( const char* kind_, bool dst_empty_ ) const;
 
 private:
   storage_type vec_;

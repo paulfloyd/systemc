@@ -1030,40 +1030,40 @@ public:
 
     // assignment operators
 
-    const sc_unsigned& operator = (const sc_unsigned&        v);
-    const sc_unsigned& operator = (const sc_unsigned_subref_r& a );
+    sc_unsigned& operator = (const sc_unsigned&        v);
+    sc_unsigned& operator = (const sc_unsigned_subref_r& a );
 
     template<class T>
-    const sc_unsigned& operator = ( const sc_generic_base<T>& a )
+    sc_unsigned& operator = ( const sc_generic_base<T>& a )
         { a->to_sc_unsigned(*this); return *this; }
 
-    const sc_unsigned& operator = (const sc_signed&          v);
-    const sc_unsigned& operator = (const sc_signed_subref_r& a );
+    sc_unsigned& operator = (const sc_signed&          v);
+    sc_unsigned& operator = (const sc_signed_subref_r& a );
 
-    const sc_unsigned& operator = ( const char*               v);
-    const sc_unsigned& operator = ( int64                     v);
-    const sc_unsigned& operator = ( uint64                    v);
-    const sc_unsigned& operator = ( long                      v);
-    const sc_unsigned& operator = ( unsigned long             v);
+    sc_unsigned& operator = ( const char*               a);
+    sc_unsigned& operator = ( int64                     v);
+    sc_unsigned& operator = ( uint64                    v);
+    sc_unsigned& operator = ( long                      v);
+    sc_unsigned& operator = ( unsigned long             v);
 
-    const sc_unsigned& operator = ( int                       v)
+    sc_unsigned& operator = ( int                       v)
 	{ return operator=((long) v); }
 
-    const sc_unsigned& operator = ( unsigned int              v)
+    sc_unsigned& operator = ( unsigned int              v)
 	{ return operator=((unsigned long) v); }
 
-    const sc_unsigned& operator = ( double                    v);
-    const sc_unsigned& operator = ( const sc_int_base&        v);
-    const sc_unsigned& operator = ( const sc_uint_base&       v);
+    sc_unsigned& operator = ( double                    v);
+    sc_unsigned& operator = ( const sc_int_base&        v);
+    sc_unsigned& operator = ( const sc_uint_base&       v);
 
-    const sc_unsigned& operator = ( const sc_bv_base& );
-    const sc_unsigned& operator = ( const sc_lv_base& );
+    sc_unsigned& operator = ( const sc_bv_base& );
+    sc_unsigned& operator = ( const sc_lv_base& );
 
 #ifdef SC_INCLUDE_FX
-    const sc_unsigned& operator = ( const sc_fxval& );
-    const sc_unsigned& operator = ( const sc_fxval_fast& );
-    const sc_unsigned& operator = ( const sc_fxnum& );
-    const sc_unsigned& operator = ( const sc_fxnum_fast& );
+    sc_unsigned& operator = ( const sc_fxval& );
+    sc_unsigned& operator = ( const sc_fxval_fast& );
+    sc_unsigned& operator = ( const sc_fxnum& );
+    sc_unsigned& operator = ( const sc_fxnum_fast& );
 #endif
 
 
@@ -1223,8 +1223,8 @@ public:
 
     // explicit conversion to character string
 
-    const std::string to_string( sc_numrep numrep = SC_DEC ) const;
-    const std::string to_string( sc_numrep numrep, bool w_prefix ) const;
+    std::string to_string( sc_numrep numrep = SC_DEC ) const;
+    std::string to_string( sc_numrep numrep, bool w_prefix ) const;
 
     // Print functions. dump prints the internals of the class.
 

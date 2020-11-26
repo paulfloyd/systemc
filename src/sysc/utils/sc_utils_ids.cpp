@@ -73,7 +73,7 @@ static sc_msg_def texts[] = {
 #undef SC_DEFINE_MESSAGE
 };
 static sc_report_handler::msg_def_items items = {
-    texts, sizeof(texts)/sizeof(*texts), false, 0
+    texts, sizeof(texts)/sizeof(*texts), false, nullptr
 };
 
 static int initialize();
@@ -89,7 +89,7 @@ int initialize()
     // PROCESS ANY ENVIRONMENTAL OVERRIDES:
 
     const char* deprecation_warn = std::getenv("SC_DEPRECATION_WARNINGS");
-    if ( (deprecation_warn!=0) && !std::strcmp(deprecation_warn,"DISABLE") )
+    if ( (deprecation_warn!=nullptr) && !std::strcmp(deprecation_warn,"DISABLE") )
     {
         sc_report_handler::set_actions( SC_ID_IEEE_1666_DEPRECATION_
                                       , SC_DO_NOTHING);

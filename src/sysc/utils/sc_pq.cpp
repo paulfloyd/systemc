@@ -38,7 +38,7 @@
 namespace sc_core {
 
 sc_ppq_base::sc_ppq_base( int sz, int (*cmp)( const void*, const void* ) )
-    : m_heap(0), m_size_alloc( sz ), m_heap_size( 0 ), m_compar( cmp )
+    : m_heap(nullptr), m_size_alloc( sz ), m_heap_size( 0 ), m_compar( cmp )
 {
     // m_size_alloc must be at least 2, otherwise resizing doesn't work
     if( m_size_alloc < 2 ) {
@@ -48,7 +48,7 @@ sc_ppq_base::sc_ppq_base( int sz, int (*cmp)( const void*, const void* ) )
     m_heap = new void*[m_size_alloc + 1];
     // initialize
     for( int i = 0; i < m_size_alloc; ++ i ) {
-	m_heap[i] = 0;
+	m_heap[i] = nullptr;
     }
 }
 

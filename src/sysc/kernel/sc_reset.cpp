@@ -65,8 +65,8 @@ namespace sc_core {
 
 inline sc_reset_finder::sc_reset_finder(
     bool async, const sc_in<bool>* port_p, bool level, sc_process_b* target_p) :
-    m_async(async), m_level(level), m_next_p(0), m_in_p(port_p), m_inout_p(0),
-    m_out_p(0), m_target_p(target_p)
+    m_async(async), m_level(level), m_next_p(nullptr), m_in_p(port_p), m_inout_p(nullptr),
+    m_out_p(nullptr), m_target_p(target_p)
 {
     sc_get_curr_simcontext()->add_reset_finder(this);
 }
@@ -74,8 +74,8 @@ inline sc_reset_finder::sc_reset_finder(
 inline sc_reset_finder::sc_reset_finder(
     bool async, const sc_inout<bool>* port_p, bool level, sc_process_b* target_p
 ) :
-    m_async(async), m_level(level), m_next_p(0), m_in_p(0), m_inout_p(port_p),
-    m_out_p(0), m_target_p(target_p)
+    m_async(async), m_level(level), m_next_p(nullptr), m_in_p(nullptr), m_inout_p(port_p),
+    m_out_p(nullptr), m_target_p(target_p)
 {
     sc_get_curr_simcontext()->add_reset_finder(this);
 }
@@ -83,7 +83,7 @@ inline sc_reset_finder::sc_reset_finder(
 inline sc_reset_finder::sc_reset_finder(
     bool async, const sc_out<bool>* port_p, bool level, sc_process_b* target_p
 ) :
-    m_async(async), m_level(level), m_next_p(0), m_in_p(0), m_inout_p(0),
+    m_async(async), m_level(level), m_next_p(nullptr), m_in_p(nullptr), m_inout_p(nullptr),
     m_out_p(port_p), m_target_p(target_p)
 {
     sc_get_curr_simcontext()->add_reset_finder(this);
@@ -128,7 +128,7 @@ void sc_reset::reconcile_resets(sc_reset_finder* reset_finder_q)
     const sc_signal_in_if<bool>*  iface_p;      // Interface to reset signal.
     sc_reset_finder*              next_p;       // Next finder to process.
     sc_reset_finder*              now_p;        // Finder currently processing.
-    sc_reset_target               reset_target; // Target's reset entry.
+    sc_reset_target               reset_target{}; // Target's reset entry.
     sc_reset*                     reset_p;      // Reset object to use.
 
     for ( now_p = reset_finder_q; now_p; now_p = next_p )
@@ -149,7 +149,7 @@ void sc_reset::reconcile_resets(sc_reset_finder* reset_finder_q)
             iface_p = dynamic_cast<const sc_signal_in_if<bool>*>(
                 now_p->m_out_p->get_interface());
         }
-        sc_assert( iface_p != 0 );
+        sc_assert( iface_p != nullptr );
         reset_p = iface_p->is_reset();
 	now_p->m_target_p->m_resets.push_back(reset_p);
 	reset_target.m_async = now_p->m_async;
@@ -306,7 +306,7 @@ void sc_reset::reset_signal_is(
     bool async, const sc_signal_in_if<bool>& iface, bool level )
 {
     sc_process_b*   process_p;    // process adding reset for.
-    sc_reset_target reset_target; // entry to build for the process.
+    sc_reset_target reset_target{}; // entry to build for the process.
     sc_reset*       reset_p;      // reset object.
 
     process_p = sc_process_b::last_created_process_base();

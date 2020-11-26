@@ -90,8 +90,7 @@ protected:
 
     // constructor 
 
-    sc_fifo_in_if() 
-        {} 
+    sc_fifo_in_if() = default;
 
 private: 
 
@@ -157,8 +156,7 @@ protected:
 
     // constructor 
 
-    sc_fifo_out_if() 
-        {} 
+    sc_fifo_out_if() = default;
 
 private: 
 

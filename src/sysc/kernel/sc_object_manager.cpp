@@ -56,12 +56,8 @@ namespace sc_core {
 // ----------------------------------------------------------------------------
 
 sc_object_manager::sc_object_manager() :
-    m_event_it(),
-    m_event_walk_ok(0),
-    m_instance_table(),
-    m_module_name_stack(0),
-    m_object_it(),
-    m_object_stack(),
+    m_event_walk_ok(false),
+    m_module_name_stack(nullptr),
     m_object_walk_ok()
 {
 }
@@ -80,8 +76,8 @@ sc_object_manager::~sc_object_manager()
     for ( it = m_instance_table.begin(); it != m_instance_table.end(); it++) 
     {
         if(it->second.m_name_origin == SC_NAME_OBJECT) {
-            sc_object* obj_p = static_cast<sc_object*>(it->second.m_element_p);
-            obj_p->m_simc = 0;
+            auto* obj_p = static_cast<sc_object*>(it->second.m_element_p);
+            obj_p->m_simc = nullptr;
         }
     }
 }
@@ -169,7 +165,7 @@ std::string sc_object_manager::create_name(const char* leaf_name)
 bool
 sc_object_manager::name_exists(const std::string& name)
 {
-    instance_table_t::const_iterator it = m_instance_table.find(name);
+    auto it = m_instance_table.find(name);
     return (it != m_instance_table.end()) &&
            (it->second.m_name_origin != SC_NAME_NONE);
 }
@@ -187,13 +183,13 @@ sc_object_manager::name_exists(const std::string& name)
 const char*
 sc_object_manager::get_name(const std::string& name)
 {
-    instance_table_t::iterator it = m_instance_table.find(name);
+    auto it = m_instance_table.find(name);
     if (it != m_instance_table.end() &&
         it->second.m_name_origin != SC_NAME_NONE) {
         return it->first.c_str();
-    } else {
-        return NULL;
-    }
+    } 
+        return nullptr;
+    
 }
 
 // +----------------------------------------------------------------------------
@@ -215,9 +211,9 @@ sc_object_manager::find_event(const char* name)
        && it->second.m_name_origin == SC_NAME_EVENT)
     {
         return static_cast<sc_event*>(it->second.m_element_p);
-    } else {
-        return NULL;
-    }
+    } 
+        return nullptr;
+    
 }
 
 // +----------------------------------------------------------------------------
@@ -239,9 +235,9 @@ sc_object_manager::find_object(const char* name)
        && it->second.m_name_origin == SC_NAME_OBJECT)
     {
         return static_cast<sc_object*>(it->second.m_element_p);
-    } else {
-        return NULL;
-    }
+    } 
+        return nullptr;
+    
 }
 
 
@@ -258,7 +254,7 @@ sc_object_manager::first_object()
     sc_object* result_p; // result to return.
 
     m_object_walk_ok = true;
-    result_p = NULL;
+    result_p = nullptr;
     for ( m_object_it = m_instance_table.begin(); 
           m_object_it != m_instance_table.end(); 
 	  m_object_it++ )
@@ -282,7 +278,7 @@ sc_object_manager::hierarchy_curr()
     std::size_t hierarchy_n;  // current size of the hierarchy.
 
     hierarchy_n = m_object_stack.size();
-    return hierarchy_n ? m_object_stack[hierarchy_n-1] : 0;
+    return hierarchy_n ? m_object_stack[hierarchy_n-1] : nullptr;
 }
 
 // +----------------------------------------------------------------------------
@@ -298,7 +294,7 @@ sc_object_manager::hierarchy_pop()
     sc_object*  result_p;     // object to return.
 
     hierarchy_n = m_object_stack.size();
-    if ( hierarchy_n == 0 ) return NULL;
+    if ( hierarchy_n == 0 ) return nullptr;
     hierarchy_n--;
     result_p = m_object_stack[hierarchy_n];
     m_object_stack.pop_back();
@@ -345,10 +341,10 @@ bool
 sc_object_manager::insert_external_name(const std::string& name)
 {
     if(!name_exists(name)) {
-        m_instance_table[name].m_element_p = NULL;
+        m_instance_table[name].m_element_p = nullptr;
         m_instance_table[name].m_name_origin = SC_NAME_EXTERNAL;
         return true;
-    } else {
+    } 
         table_entry element = m_instance_table[name];
         std::stringstream msg;
         msg << name << " ("
@@ -359,7 +355,7 @@ sc_object_manager::insert_external_name(const std::string& name)
             << ")";
         SC_REPORT_WARNING( SC_ID_NAME_EXISTS_, msg.str().c_str());
         return false;
-    }
+    
 }
 
 // +----------------------------------------------------------------------------
@@ -408,10 +404,10 @@ sc_object_manager::next_object()
 
     sc_assert( m_object_walk_ok );
 
-    if ( m_object_it == m_instance_table.end() ) return NULL;
+    if ( m_object_it == m_instance_table.end() ) return nullptr;
     m_object_it++;
 
-    for ( result_p = NULL; m_object_it != m_instance_table.end(); 
+    for ( result_p = nullptr; m_object_it != m_instance_table.end(); 
 	  m_object_it++ )
     {
         if(m_object_it->second.m_name_origin == SC_NAME_OBJECT) {
@@ -431,7 +427,7 @@ sc_object_manager::pop_module_name()
 {
     sc_module_name* mod_name = m_module_name_stack;
     m_module_name_stack = m_module_name_stack->m_next;
-    mod_name->m_next = 0;
+    mod_name->m_next = nullptr;
     return mod_name;
 }
 
@@ -459,8 +455,8 @@ sc_object_manager::push_module_name(sc_module_name* mod_name_p)
 sc_module_name*
 sc_object_manager::top_of_module_name_stack()
 {
-    if( m_module_name_stack == 0 ) {
-	SC_REPORT_ERROR( SC_ID_MODULE_NAME_STACK_EMPTY_, 0 );
+    if( m_module_name_stack == nullptr ) {
+	SC_REPORT_ERROR( SC_ID_MODULE_NAME_STACK_EMPTY_, nullptr );
     }
     return m_module_name_stack;
 }
@@ -482,7 +478,7 @@ sc_object_manager::remove_event(const std::string& name)
     if(it != m_instance_table.end()
        && it->second.m_name_origin == SC_NAME_EVENT)
     {
-        it->second.m_element_p = NULL;
+        it->second.m_element_p = nullptr;
         it->second.m_name_origin = SC_NAME_NONE;
     }
 }
@@ -504,7 +500,7 @@ sc_object_manager::remove_object(const std::string& name)
     if(it != m_instance_table.end()
        && it->second.m_name_origin == SC_NAME_OBJECT)
     {
-        it->second.m_element_p = NULL;
+        it->second.m_element_p = nullptr;
         it->second.m_name_origin = SC_NAME_NONE;
     }
 }
@@ -526,12 +522,12 @@ sc_object_manager::remove_external_name(const std::string& name)
     if(it != m_instance_table.end()
        && it->second.m_name_origin == SC_NAME_EXTERNAL)
     {
-        it->second.m_element_p = NULL;
+        it->second.m_element_p = nullptr;
         it->second.m_name_origin = SC_NAME_NONE;
         return true;
-    } else {
+    } 
         return false;
-    }
+    
 }
 
 } // namespace sc_core

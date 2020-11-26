@@ -45,7 +45,7 @@ class sc_name_gen
 {
 public:
 
-    sc_name_gen();
+    sc_name_gen() = default;
     ~sc_name_gen();
 
     const char* gen_unique_name( const char* basename_,

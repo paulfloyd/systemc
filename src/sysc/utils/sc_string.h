@@ -67,7 +67,7 @@ sc_string_old operator + ( const char* s, const sc_string_old& t );
 class SC_API sc_string_old
 {
     friend ::std::ostream& operator << (::std::ostream& os, const sc_string_old& a);
-    friend ::std::istream& operator >> ( ::std::istream& is, sc_string_old& a );
+    friend ::std::istream& operator >> ( ::std::istream& is, sc_string_old& s );
 
 public:
 

@@ -439,15 +439,12 @@ bool sc_unsigned::and_reduce() const
 	if ( sgn == SC_ZERO ) return false;
     for ( i = 0; i < ndigits-1; i++ )
         if ( (digit[i] & DIGIT_MASK) != DIGIT_MASK ) return false;
-    if ( (digit[i] & ~(~0U << ((nbits-1) % BITS_PER_DIGIT))) ==
-         static_cast<sc_digit>(~(~0U << ((nbits-1) % BITS_PER_DIGIT))) )
-		return true;
-    return false;
+    return (digit[i] & ~(~0U << ((nbits-1) % BITS_PER_DIGIT))) == static_cast<sc_digit>(~(~0U << ((nbits-1) % BITS_PER_DIGIT)));
 }
 
 bool sc_unsigned::or_reduce() const
 {
-	return ( sgn == SC_ZERO ) ? false : true;
+	return sgn != SC_ZERO;
 }
 
 bool sc_unsigned::xor_reduce() const
@@ -458,7 +455,7 @@ bool sc_unsigned::xor_reduce() const
     odd = 0;
     for ( i = 0; i < nbits-1; i++ )
 	if ( test(i) ) odd = ~odd;
-    return odd ? true : false;
+    return odd != 0;
 }
 
 
@@ -468,10 +465,10 @@ bool sc_unsigned::xor_reduce() const
 
 // assignment operators
 
-const sc_unsigned&
+sc_unsigned&
 sc_unsigned::operator = ( const char* a )
 {
-    if( a == 0 ) {
+    if( a == nullptr ) {
         SC_REPORT_ERROR( sc_core::SC_ID_CONVERSION_FAILED_,
                          "character string is zero" );
     }
@@ -491,7 +488,7 @@ sc_unsigned::operator = ( const char* a )
     return *this;
 }
 
-const sc_unsigned&
+sc_unsigned&
 sc_unsigned::operator=(int64 v)
 {
   sgn = get_sign(v);
@@ -505,7 +502,7 @@ sc_unsigned::operator=(int64 v)
   return *this;
 }
 
-const sc_unsigned&
+sc_unsigned&
 sc_unsigned::operator=(uint64 v)
 {
   if (v == 0) {
@@ -520,7 +517,7 @@ sc_unsigned::operator=(uint64 v)
   return *this;
 }
 
-const sc_unsigned&
+sc_unsigned&
 sc_unsigned::operator=(long v)
 {
   sgn = get_sign(v);
@@ -534,7 +531,7 @@ sc_unsigned::operator=(long v)
   return *this;
 }
 
-const sc_unsigned&
+sc_unsigned&
 sc_unsigned::operator=(unsigned long v)
 {
   if (v == 0) {
@@ -549,7 +546,7 @@ sc_unsigned::operator=(unsigned long v)
   return *this;
 }
 
-const sc_unsigned&
+sc_unsigned&
 sc_unsigned::operator=(double v)
 {
   is_bad_double(v);
@@ -571,7 +568,7 @@ sc_unsigned::operator=(double v)
 
 // ----------------------------------------------------------------------------
 
-const sc_unsigned&
+sc_unsigned&
 sc_unsigned::operator = ( const sc_bv_base& v )
 {
     int minlen = sc_min( nbits, v.length() );
@@ -580,13 +577,13 @@ sc_unsigned::operator = ( const sc_bv_base& v )
 	safe_set( i, v.get_bit( i ), digit );
     }
     for( ; i < nbits; ++ i ) {
-	safe_set( i, 0, digit );  // zero-extend
+	safe_set( i, false, digit );  // zero-extend
     }
     convert_2C_to_SM();
     return *this;
 }
 
-const sc_unsigned&
+sc_unsigned&
 sc_unsigned::operator = ( const sc_lv_base& v )
 {
     int minlen = sc_min( nbits, v.length() );
@@ -595,7 +592,7 @@ sc_unsigned::operator = ( const sc_lv_base& v )
 	safe_set( i, sc_logic( v.get_bit( i ) ).to_bool(), digit );
     }
     for( ; i < nbits; ++ i ) {
-	safe_set( i, 0, digit );  // zero-extend
+	safe_set( i, false, digit );  // zero-extend
     }
     convert_2C_to_SM();
     return *this;
@@ -604,7 +601,7 @@ sc_unsigned::operator = ( const sc_lv_base& v )
 
 // explicit conversion to character string
 
-const std::string
+std::string
 sc_unsigned::to_string( sc_numrep numrep ) const
 {
     int len = length();
@@ -612,7 +609,7 @@ sc_unsigned::to_string( sc_numrep numrep ) const
     return aa.to_string( numrep );
 }
 
-const std::string
+std::string
 sc_unsigned::to_string( sc_numrep numrep, bool w_prefix ) const
 {
     int len = length();
@@ -625,7 +622,7 @@ sc_unsigned::to_string( sc_numrep numrep, bool w_prefix ) const
 //  SECTION: Interfacing with sc_int_base
 // ----------------------------------------------------------------------------
 
-const sc_unsigned&
+sc_unsigned&
 sc_unsigned::operator= (const sc_int_base& v)
 { return operator=((int64) v); }
 
@@ -722,7 +719,7 @@ operator>=(const sc_int_base& u, const sc_unsigned& v)
 //  SECTION: Interfacing with sc_uint_base
 // ----------------------------------------------------------------------------
 
-const sc_unsigned&
+sc_unsigned&
 sc_unsigned::operator= (const sc_uint_base& v)
 { return operator=((uint64) v); }
 
@@ -871,29 +868,29 @@ operator>=(const sc_uint_base& u, const sc_unsigned& v)
 #define CONVERT_LONG(u) \
 small_type u ## s = get_sign(u);                   \
 sc_digit u ## d[DIGITS_PER_ULONG];                    \
-from_uint(DIGITS_PER_ULONG, u ## d, (unsigned long) u);
+from_uint(DIGITS_PER_ULONG, u ## d, (unsigned long) (u));
 
 #define CONVERT_LONG_2(u) \
 sc_digit u ## d[DIGITS_PER_ULONG];                     \
-from_uint(DIGITS_PER_ULONG, u ## d, (unsigned long) u);
+from_uint(DIGITS_PER_ULONG, u ## d, (unsigned long) (u));
 
 #define CONVERT_INT(u) \
 small_type u ## s = get_sign(u);                        \
 sc_digit u ## d[DIGITS_PER_UINT];                    \
-from_uint(DIGITS_PER_UINT, u ## d, (unsigned int) u);
+from_uint(DIGITS_PER_UINT, u ## d, (unsigned int) (u));
 
 #define CONVERT_INT_2(u) \
 sc_digit u ## d[DIGITS_PER_UINT];                     \
-from_uint(DIGITS_PER_UINT, u ## d, (unsigned int) u);
+from_uint(DIGITS_PER_UINT, u ## d, (unsigned int) (u));
 
 #define CONVERT_INT64(u) \
 small_type u ## s = get_sign(u);                   \
 sc_digit u ## d[DIGITS_PER_UINT64];              \
-from_uint(DIGITS_PER_UINT64, u ## d, (uint64) u);
+from_uint(DIGITS_PER_UINT64, u ## d, (uint64) (u));
 
 #define CONVERT_INT64_2(u) \
 sc_digit u ## d[DIGITS_PER_UINT64];              \
-from_uint(DIGITS_PER_UINT64, u ## d, (uint64) u);
+from_uint(DIGITS_PER_UINT64, u ## d, (uint64) (u));
 
 
 // ----------------------------------------------------------------------------
@@ -1719,10 +1716,7 @@ operator==(const sc_unsigned& u, const sc_unsigned& v)
 {
   if (&u == &v)
     return true;
-  if (compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit,
-                       v.sgn, v.nbits, v.ndigits, v.digit) != 0)
-    return false;
-  return true;
+  return compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit, v.sgn, v.nbits, v.ndigits, v.digit) == 0;
 }
 
 
@@ -1756,10 +1750,7 @@ operator==(const sc_unsigned& u, int64 v)
   if (v < 0)
     return false;
   CONVERT_INT64(v);
-  if (compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit,
-                       vs, BITS_PER_UINT64, DIGITS_PER_UINT64, vd) != 0)
-    return false;
-  return true;
+  return compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit, vs, BITS_PER_UINT64, DIGITS_PER_UINT64, vd) == 0;
 }
 
 
@@ -1769,10 +1760,7 @@ operator==(int64 u, const sc_unsigned& v)
   if (u < 0)
     return false;
   CONVERT_INT64(u);
-  if (compare_unsigned(us, BITS_PER_UINT64, DIGITS_PER_UINT64, ud,
-                       v.sgn, v.nbits, v.ndigits, v.digit) != 0)
-    return false;
-  return true;
+  return compare_unsigned(us, BITS_PER_UINT64, DIGITS_PER_UINT64, ud, v.sgn, v.nbits, v.ndigits, v.digit) == 0;
 }
 
 
@@ -1780,10 +1768,7 @@ bool
 operator==(const sc_unsigned& u, uint64 v)
 {
   CONVERT_INT64(v);
-  if (compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit,
-                       vs, BITS_PER_UINT64, DIGITS_PER_UINT64, vd) != 0)
-    return false;
-  return true;
+  return compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit, vs, BITS_PER_UINT64, DIGITS_PER_UINT64, vd) == 0;
 }
 
 
@@ -1791,10 +1776,7 @@ bool
 operator==(uint64 u, const sc_unsigned& v)
 {
   CONVERT_INT64(u);
-  if (compare_unsigned(us, BITS_PER_UINT64, DIGITS_PER_UINT64, ud,
-                       v.sgn, v.nbits, v.ndigits, v.digit) != 0)
-    return false;
-  return true;
+  return compare_unsigned(us, BITS_PER_UINT64, DIGITS_PER_UINT64, ud, v.sgn, v.nbits, v.ndigits, v.digit) == 0;
 }
 
 
@@ -1804,10 +1786,7 @@ operator==(const sc_unsigned& u, long v)
   if (v < 0)
     return false;
   CONVERT_LONG(v);
-  if (compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit,
-                       vs, BITS_PER_ULONG, DIGITS_PER_ULONG, vd) != 0)
-    return false;
-  return true;
+  return compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit, vs, BITS_PER_ULONG, DIGITS_PER_ULONG, vd) == 0;
 }
 
 
@@ -1817,10 +1796,7 @@ operator==(long u, const sc_unsigned& v)
   if (u < 0)
     return false;
   CONVERT_LONG(u);
-  if (compare_unsigned(us, BITS_PER_ULONG, DIGITS_PER_ULONG, ud,
-                       v.sgn, v.nbits, v.ndigits, v.digit) != 0)
-    return false;
-  return true;
+  return compare_unsigned(us, BITS_PER_ULONG, DIGITS_PER_ULONG, ud, v.sgn, v.nbits, v.ndigits, v.digit) == 0;
 }
 
 
@@ -1828,10 +1804,7 @@ bool
 operator==(const sc_unsigned& u, unsigned long v)
 {
   CONVERT_LONG(v);
-  if (compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit,
-                       vs, BITS_PER_ULONG, DIGITS_PER_ULONG, vd) != 0)
-    return false;
-  return true;
+  return compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit, vs, BITS_PER_ULONG, DIGITS_PER_ULONG, vd) == 0;
 }
 
 
@@ -1839,10 +1812,7 @@ bool
 operator==(unsigned long u, const sc_unsigned& v)
 {
   CONVERT_LONG(u);
-  if (compare_unsigned(us, BITS_PER_ULONG, DIGITS_PER_ULONG, ud,
-                       v.sgn, v.nbits, v.ndigits, v.digit) != 0)
-    return false;
-  return true;
+  return compare_unsigned(us, BITS_PER_ULONG, DIGITS_PER_ULONG, ud, v.sgn, v.nbits, v.ndigits, v.digit) == 0;
 }
 
 
@@ -1875,10 +1845,7 @@ operator<(const sc_unsigned& u, const sc_unsigned& v)
 {
   if (&u == &v)
     return false;
-  if (compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit,
-                       v.sgn, v.nbits, v.ndigits, v.digit) < 0)
-    return true;
-  return false;
+  return compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit, v.sgn, v.nbits, v.ndigits, v.digit) < 0;
 }
 
 
@@ -1887,10 +1854,7 @@ operator<(const sc_unsigned& u, const sc_signed& v)
 {
   if (v.sgn == SC_NEG)
     return false;
-  if (compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit,
-                       v.sgn, v.nbits, v.ndigits, v.digit, 0, 1) < 0)
-    return true;
-  return false;
+  return compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit, v.sgn, v.nbits, v.ndigits, v.digit, 0, 1) < 0;
 }
 
 
@@ -1912,10 +1876,7 @@ operator<(const sc_unsigned& u, int64 v)
   if (v < 0)
     return false;
   CONVERT_INT64(v);
-  if (compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit,
-                       vs, BITS_PER_UINT64, DIGITS_PER_UINT64, vd) < 0)
-    return true;
-  return false;
+  return compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit, vs, BITS_PER_UINT64, DIGITS_PER_UINT64, vd) < 0;
 }
 
 
@@ -1925,10 +1886,7 @@ operator<(int64 u, const sc_unsigned& v)
   if (u < 0)
     return true;
   CONVERT_INT64(u);
-  if (compare_unsigned(us, BITS_PER_UINT64, DIGITS_PER_UINT64, ud,
-                       v.sgn, v.nbits, v.ndigits, v.digit) < 0)
-    return true;
-  return false;
+  return compare_unsigned(us, BITS_PER_UINT64, DIGITS_PER_UINT64, ud, v.sgn, v.nbits, v.ndigits, v.digit) < 0;
 }
 
 
@@ -1936,10 +1894,7 @@ bool
 operator<(const sc_unsigned& u, uint64 v)
 {
   CONVERT_INT64(v);
-  if (compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit,
-                       vs, BITS_PER_UINT64, DIGITS_PER_UINT64, vd) < 0)
-    return true;
-  return false;
+  return compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit, vs, BITS_PER_UINT64, DIGITS_PER_UINT64, vd) < 0;
 }
 
 
@@ -1947,10 +1902,7 @@ bool
 operator<(uint64 u, const sc_unsigned& v)
 {
   CONVERT_INT64(u);
-  if (compare_unsigned(us, BITS_PER_UINT64, DIGITS_PER_UINT64, ud,
-                       v.sgn, v.nbits, v.ndigits, v.digit) < 0)
-    return true;
-  return false;
+  return compare_unsigned(us, BITS_PER_UINT64, DIGITS_PER_UINT64, ud, v.sgn, v.nbits, v.ndigits, v.digit) < 0;
 }
 
 
@@ -1960,10 +1912,7 @@ operator<(const sc_unsigned& u, long v)
   if (v < 0)
     return false;
   CONVERT_LONG(v);
-  if (compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit,
-                       vs, BITS_PER_ULONG, DIGITS_PER_ULONG, vd) < 0)
-    return true;
-  return false;
+  return compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit, vs, BITS_PER_ULONG, DIGITS_PER_ULONG, vd) < 0;
 }
 
 
@@ -1973,10 +1922,7 @@ operator<(long u, const sc_unsigned& v)
   if (u < 0)
     return true;
   CONVERT_LONG(u);
-  if (compare_unsigned(us, BITS_PER_ULONG, DIGITS_PER_ULONG, ud,
-                       v.sgn, v.nbits, v.ndigits, v.digit) < 0)
-    return true;
-  return false;
+  return compare_unsigned(us, BITS_PER_ULONG, DIGITS_PER_ULONG, ud, v.sgn, v.nbits, v.ndigits, v.digit) < 0;
 }
 
 
@@ -1984,10 +1930,7 @@ bool
 operator<(const sc_unsigned& u, unsigned long v)
 {
   CONVERT_LONG(v);
-  if (compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit,
-                       vs, BITS_PER_ULONG, DIGITS_PER_ULONG, vd) < 0)
-    return true;
-  return false;
+  return compare_unsigned(u.sgn, u.nbits, u.ndigits, u.digit, vs, BITS_PER_ULONG, DIGITS_PER_ULONG, vd) < 0;
 }
 
 
@@ -1995,10 +1938,7 @@ bool
 operator<(unsigned long u, const sc_unsigned& v)
 {
   CONVERT_LONG(u);
-  if (compare_unsigned(us, BITS_PER_ULONG, DIGITS_PER_ULONG, ud,
-                       v.sgn, v.nbits, v.ndigits, v.digit) < 0)
-    return true;
-  return false;
+  return compare_unsigned(us, BITS_PER_ULONG, DIGITS_PER_ULONG, ud, v.sgn, v.nbits, v.ndigits, v.digit) < 0;
 }
 
 
@@ -2085,18 +2025,18 @@ compare_unsigned(small_type us,
     if (us == SC_ZERO)
       return 0;
 
-    else {
+    
 
       int cmp_res = vec_skip_and_cmp(und, ud, vnd, vd);
 
       if (us == SC_POS)
         return cmp_res;
-      else
+      
         return -cmp_res;
 
-    }
+    
   }
-  else {
+  
 
     if (us == SC_ZERO)
       return -vs;
@@ -2111,7 +2051,7 @@ compare_unsigned(small_type us,
 #ifdef SC_MAX_NBITS
     sc_digit d[MAX_NDIGITS];
 #else
-    sc_digit *d = new sc_digit[nd];
+    auto *d = new sc_digit[nd];
 #endif
 
     if (us == SC_NEG) {
@@ -2137,7 +2077,7 @@ compare_unsigned(small_type us,
 
     return cmp_res;
 
-  }
+  
 }
 
 
@@ -2151,7 +2091,7 @@ sc_unsigned::iszero() const
   if (sgn == SC_ZERO)
     return true;
 
-  else if (sgn == SC_NEG) {
+  if (sgn == SC_NEG) {
 
     // A negative unsigned number can be zero, e.g., -16 in 4 bits, so
     // check that.
@@ -2159,7 +2099,7 @@ sc_unsigned::iszero() const
 #ifdef SC_MAX_NBITS
     sc_digit d[MAX_NDIGITS];
 #else
-    sc_digit *d = new sc_digit[ndigits];
+    auto *d = new sc_digit[ndigits];
 #endif
 
     vec_copy(ndigits, d, digit);
@@ -2175,7 +2115,7 @@ sc_unsigned::iszero() const
     return res;
 
   }
-  else
+  
     return false;
 }
 

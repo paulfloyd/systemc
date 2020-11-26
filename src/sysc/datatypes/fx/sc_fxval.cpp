@@ -64,62 +64,62 @@ namespace sc_dt
 
 // explicit conversion to character string
 
-const std::string
+std::string
 sc_fxval::to_string() const
 {
     return std::string( m_rep->to_string( SC_DEC, -1, SC_E ) );
 }
 
-const std::string
+std::string
 sc_fxval::to_string( sc_numrep numrep ) const
 {
     return std::string( m_rep->to_string( numrep, -1, SC_E ) );
 }
 
-const std::string
+std::string
 sc_fxval::to_string( sc_numrep numrep, bool w_prefix ) const
 {
     return std::string( m_rep->to_string( numrep, (w_prefix ? 1 : 0), SC_E ) );
 }
 
-const std::string
+std::string
 sc_fxval::to_string( sc_fmt fmt ) const
 {
     return std::string( m_rep->to_string( SC_DEC, -1, fmt ) );
 }
 
-const std::string
+std::string
 sc_fxval::to_string( sc_numrep numrep, sc_fmt fmt ) const
 {
     return std::string( m_rep->to_string( numrep, -1, fmt ) );
 }
 
-const std::string
+std::string
 sc_fxval::to_string( sc_numrep numrep, bool w_prefix, sc_fmt fmt ) const
 {
     return std::string( m_rep->to_string( numrep, (w_prefix ? 1 : 0), fmt ) );
 }
 
 
-const std::string
+std::string
 sc_fxval::to_dec() const
 {
     return std::string( m_rep->to_string( SC_DEC, -1, SC_E ) );
 }
 
-const std::string
+std::string
 sc_fxval::to_bin() const
 {
     return std::string( m_rep->to_string( SC_BIN, -1, SC_E ) );
 }
 
-const std::string
+std::string
 sc_fxval::to_oct() const
 {
     return std::string( m_rep->to_string( SC_OCT, -1, SC_E ) );
 }
 
-const std::string
+std::string
 sc_fxval::to_hex() const
 {
     return std::string( m_rep->to_string( SC_HEX, -1, SC_E ) );
@@ -167,7 +167,7 @@ sc_fxval::lock_observer() const
 {
     SC_ASSERT_( m_observer != 0, "lock observer failed" );
     sc_fxval_observer* tmp = m_observer;
-    m_observer = 0;
+    m_observer = nullptr;
     return tmp;
 }
 
@@ -228,7 +228,7 @@ print_dec( scfx_string& s, scfx_ieee_double id, int w_prefix, sc_fmt fmt )
 
 	for( i = int_digits + len - 1; i >= len; i-- )
 	{
-	    unsigned int remainder = (unsigned int) std::fmod( int_part, 10.0 );
+	    auto remainder = (unsigned int) std::fmod( int_part, 10.0 );
 	    s[i] = static_cast<char>( '0' + remainder );
 	    
 	    if( zero_digits )
@@ -302,9 +302,9 @@ print_dec( scfx_string& s, scfx_ieee_double id, int w_prefix, sc_fmt fmt )
     if( fmt != SC_F )
     {
         if( frac_digits == 0 )
-	    scfx_print_exp( s, int_zeros );
-	else if( int_digits == 0 )
-	    scfx_print_exp( s, - frac_zeros );
+            scfx_print_exp( s, int_zeros );
+        else if( int_digits == 0 )
+            scfx_print_exp( s, - frac_zeros );
     }
 }
 
@@ -353,9 +353,9 @@ print_other( scfx_string& s, const scfx_ieee_double& id, sc_numrep numrep,
 
     sc_fxval_fast a( id2 );
 
-    int msb, lsb;
+    int msb; int lsb;
 
-    if( params != 0 )
+    if( params != nullptr )
     {
 	msb = params->iwl() - 1;
 	lsb = params->iwl() - params->wl();
@@ -446,22 +446,22 @@ print_other( scfx_string& s, const scfx_ieee_double& id, sc_numrep numrep,
     {
         int value = 0;
         for( int j = step - 1; j >= 0; -- j )
-	{
+        {
             value += static_cast<int>( a.get_bit( i ) ) << j;
             -- i;
         }
         if( value < 10 )
             s += static_cast<char>( value + '0' );
-	else
+        else
             s += static_cast<char>( value + 'a' - 10 );
-	if( i == -1 )
-	    s += '.';
+        if( i == -1 )
+            s += '.';
     }
 
     if( lsb > 0 && fmt == SC_F )
     {
-	for( int i = lsb / step; i > 0; i -- )
-	    s += '0';
+        for( int i = lsb / step; i > 0; i -- )
+            s += '0';
     }
 
     if( s[s.length() - 1] == '.' )
@@ -482,7 +482,7 @@ print_other( scfx_string& s, const scfx_ieee_double& id, sc_numrep numrep,
 
 const char*
 to_string( const scfx_ieee_double& id, sc_numrep numrep, int w_prefix,
-	   sc_fmt fmt, const scfx_params* params = 0 )
+	   sc_fmt fmt, const scfx_params* params = nullptr )
 {
     static scfx_string s;
 
@@ -508,38 +508,38 @@ to_string( const scfx_ieee_double& id, sc_numrep numrep, int w_prefix,
 
 // explicit conversion to character string
 
-const std::string
+std::string
 sc_fxval_fast::to_string() const
 {
     return std::string( sc_dt::to_string( m_val, SC_DEC, -1, SC_E ) );
 }
 
-const std::string
+std::string
 sc_fxval_fast::to_string( sc_numrep numrep ) const
 {
     return std::string( sc_dt::to_string( m_val, numrep, -1, SC_E ) );
 }
 
-const std::string
+std::string
 sc_fxval_fast::to_string( sc_numrep numrep, bool w_prefix ) const
 {
     return std::string( sc_dt::to_string( m_val, numrep, (w_prefix ? 1 : 0),
 					SC_E ) );
 }
 
-const std::string
+std::string
 sc_fxval_fast::to_string( sc_fmt fmt ) const
 {
     return std::string( sc_dt::to_string( m_val, SC_DEC, -1, fmt ) );
 }
 
-const std::string
+std::string
 sc_fxval_fast::to_string( sc_numrep numrep, sc_fmt fmt ) const
 {
     return std::string( sc_dt::to_string( m_val, numrep, -1, fmt ) );
 }
 
-const std::string
+std::string
 sc_fxval_fast::to_string( sc_numrep numrep, bool w_prefix, sc_fmt fmt ) const
 {
     return std::string( sc_dt::to_string( m_val, numrep, (w_prefix ? 1 : 0),
@@ -547,25 +547,25 @@ sc_fxval_fast::to_string( sc_numrep numrep, bool w_prefix, sc_fmt fmt ) const
 }
 
 
-const std::string
+std::string
 sc_fxval_fast::to_dec() const
 {
     return std::string( sc_dt::to_string( m_val, SC_DEC, -1, SC_E ) );
 }
 
-const std::string
+std::string
 sc_fxval_fast::to_bin() const
 {
     return std::string( sc_dt::to_string( m_val, SC_BIN, -1, SC_E ) );
 }
 
-const std::string
+std::string
 sc_fxval_fast::to_oct() const
 {
     return std::string( sc_dt::to_string( m_val, SC_OCT, -1, SC_E ) );
 }
 
-const std::string
+std::string
 sc_fxval_fast::to_hex() const
 {
     return std::string( sc_dt::to_string( m_val, SC_HEX, -1, SC_E ) );
@@ -636,11 +636,11 @@ sc_fxval_fast::get_bit( int i ) const
     int j = i - id.exponent();
     if( ( j += 20 ) >= 32 )
         return ( ( m0 & 1U << 31 ) != 0 );
-    else if( j >= 0 )
+    if( j >= 0 )
         return ( ( m0 & 1U << j ) != 0 );
-    else if( ( j += 32 ) >= 0 )
+    if( ( j += 32 ) >= 0 )
         return ( ( m1 & 1U << j ) != 0 );
-    else
+    
         return false;
 }
 
@@ -652,7 +652,7 @@ sc_fxval_fast::lock_observer() const
 {
     SC_ASSERT_( m_observer != 0, "lock observer failed" );
     sc_fxval_fast_observer* tmp = m_observer;
-    m_observer = 0;
+    m_observer = nullptr;
     return tmp;
 }
 
@@ -673,7 +673,7 @@ sc_fxval_fast::unlock_observer( sc_fxval_fast_observer* observer_ ) const
 double
 sc_fxval_fast::from_string( const char* s )
 {
-    SCFX_FAIL_IF_( s == 0 || *s == 0 );
+    SCFX_FAIL_IF_( s == nullptr || *s == 0 );
 
     scfx_string s2;
     s2 += s;
@@ -815,9 +815,9 @@ sc_fxval_fast::from_string( const char* s )
 		    case SC_OCT:
 		    case SC_HEX:
 		    {
-			if( integer >= ( base >> 1 ) )
-			    integer -= base;  // two's complement
-			break;
+                if( integer >= ( base >> 1 ) )
+                    integer -= base;  // two's complement
+                break;
 		    }
 		    default:
 			;

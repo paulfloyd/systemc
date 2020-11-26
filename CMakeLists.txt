@@ -273,8 +273,8 @@ if (NOT CMAKE_BUILD_TYPE)
        FORCE)
 endif (NOT CMAKE_BUILD_TYPE)
 
-set (CMAKE_CXX_STANDARD 98 CACHE STRING
-     "C++ standard to build all targets. Supported values are 98, 11, and 14.")
+set (CMAKE_CXX_STANDARD 17 CACHE STRING
+     "C++ standard to build all targets. Supported values are 98, 11, 14, and 17.")
 set (CMAKE_CXX_STANDARD_REQUIRED ON CACHE BOOL
      "The with CMAKE_CXX_STANDARD selected C++ standard is a requirement.")
 mark_as_advanced (CMAKE_CXX_STANDARD_REQUIRED)
@@ -546,7 +546,7 @@ if (CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
   if (IS_ABSOLUTE $ENV{SYSTEMC_HOME})
     set (_CMAKE_INSTALL_PREFIX $ENV{SYSTEMC_HOME})
   elseif (UNIX)
-    set (_CMAKE_INSTALL_PREFIX "/opt/systemc")
+    set (_CMAKE_INSTALL_PREFIX "/Users/paulf/Library/modern_systemc")
   elseif (WIN32)
     file (TO_CMAKE_PATH $ENV{ProgramFiles} _WIN32_INSTALL_PREFIX)
     set (_CMAKE_INSTALL_PREFIX "${_WIN32_INSTALL_PREFIX}/SystemC")

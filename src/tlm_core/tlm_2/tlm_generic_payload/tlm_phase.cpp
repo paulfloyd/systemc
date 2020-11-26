@@ -32,14 +32,14 @@ namespace tlm {
 
 struct tlm_phase_registry
 {
-  typedef unsigned int key_type;
+  using key_type = unsigned int;
 
   static tlm_phase_registry& instance()
     { static tlm_phase_registry inst; return inst; }
 
   unsigned int register_phase(sc_type_index type, sc_string_view name)
   {
-    type_map::const_iterator it = ids_.find( type );
+    auto it = ids_.find( type );
 
     if( name.empty() ) {
       SC_REPORT_FATAL( sc_core::SC_ID_INTERNAL_ERROR_,
@@ -62,15 +62,15 @@ struct tlm_phase_registry
     return it->second;
   }
 
-  const char* get_name( key_type id ) const
+  [[nodiscard]] const char* get_name( key_type id ) const
   {
     sc_assert( id < names_.size() );
     return names_[id].c_str();
   }
 
 private:
-  typedef std::map<sc_type_index, key_type> type_map;
-  typedef std::vector<std::string> name_table;
+  using type_map = std::map<sc_type_index, key_type>;
+  using name_table = std::vector<std::string>;
 
   type_map   ids_;
   name_table names_;

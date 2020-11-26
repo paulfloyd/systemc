@@ -246,7 +246,7 @@ DEFN_TRACE_FUNC_A( sc_dt::sc_fxnum_fast )
 
 SC_API void
 sc_trace( sc_trace_file* tf,
-	  const unsigned int& object,
+	  unsigned int object,
 	  const std::string& name,
 	  const char** enum_literals )
 {

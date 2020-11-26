@@ -58,7 +58,7 @@ namespace sc_dt
 //  arbitrary precision.
 // ----------------------------------------------------------------------------
 
-sc_fxval_observer* (*sc_fxval_observer::default_observer) () = 0;
+sc_fxval_observer* (*sc_fxval_observer::default_observer) () = nullptr;
 
 
 // ----------------------------------------------------------------------------
@@ -68,7 +68,7 @@ sc_fxval_observer* (*sc_fxval_observer::default_observer) () = 0;
 //  limited precision.
 // ----------------------------------------------------------------------------
 
-sc_fxval_fast_observer* (*sc_fxval_fast_observer::default_observer) () = 0;
+sc_fxval_fast_observer* (*sc_fxval_fast_observer::default_observer) () = nullptr;
 
 } // namespace sc_dt
 

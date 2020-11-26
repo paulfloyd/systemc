@@ -34,10 +34,10 @@
 
 namespace sc_core {
 
-static const char* info_id    = 0;
-static const char* warning_id = 0;
-static const char* error_id   = 0;
-static const char* fatal_id   = 0;
+static const char* info_id    = nullptr;
+static const char* warning_id = nullptr;
+static const char* error_id   = nullptr;
+static const char* fatal_id   = nullptr;
 
 // ----------------------------------------------------------------------------
 //  FUNCTION : sc_interrupt_here

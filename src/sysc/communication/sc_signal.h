@@ -423,7 +423,7 @@ public:
       , m_negedge_event_p( 0 ) , m_posedge_event_p( 0 ) , m_reset_p( 0 )
     {}
 
-    sc_signal( const char* name_, const value_type& initial_value_ )
+    sc_signal( const char* name_, sc_core::sc_signal<bool, POL>::value_type initial_value_ )
       : base_type( name_, initial_value_ )
       , m_negedge_event_p( 0 ) , m_posedge_event_p( 0 ) , m_reset_p( 0 )
     {}
@@ -446,7 +446,7 @@ public:
 
 
     // assignment
-    this_type& operator = ( const value_type& a )
+    this_type& operator = ( sc_core::sc_signal<bool, POL>::value_type a )
       { base_type::operator=(a); return *this; }
 
     this_type& operator = ( const sc_signal_in_if<value_type>& a )

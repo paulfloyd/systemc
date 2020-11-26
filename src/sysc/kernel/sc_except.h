@@ -55,21 +55,21 @@ class SC_API sc_user
 {
     /*EMPTY*/
 public:
-    sc_user() {}
+    sc_user() = default;
     sc_user( const sc_user& ) {}
 };
 
 class SC_API sc_halt
 {
 public:
-    sc_halt() {}
+    sc_halt() = default;
     sc_halt( const sc_halt& ) {}
 };
 
 class SC_API sc_kill
 {
 public:
-    sc_kill() {}
+    sc_kill() = default;
     sc_kill( const sc_kill& ) {}
 };
 
@@ -93,7 +93,7 @@ class SC_API sc_unwind_exception : public std::exception
 
   protected:
     explicit
-    sc_unwind_exception( sc_process_b* target_p, bool is_reset = false );
+    sc_unwind_exception( sc_process_b* proc_p, bool is_reset = false );
 
     bool active() const;
     void clear()  const;

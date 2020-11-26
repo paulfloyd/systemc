@@ -54,6 +54,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <limits>
+#include <utility>
 #include <vector>
 
 #include "sysc/kernel/sc_simcontext.h"
@@ -101,7 +102,7 @@ class vcd_trace
 {
 public:
 
-    vcd_trace(const std::string& name_, const std::string& vcd_name_);
+    vcd_trace(std::string  name_, std::string  vcd_name_);
 
     // Needs to be pure virtual as has to be defined by the particular
     // type being traced
@@ -129,9 +130,9 @@ public:
 };
 
 
-vcd_trace::vcd_trace(const std::string& name_, const std::string& vcd_name_)
-  : name(name_)
-  , vcd_name(vcd_name_)
+vcd_trace::vcd_trace(std::string  name_, std::string  vcd_name_)
+  : name(std::move(name_))
+  , vcd_name(std::move(vcd_name_))
   , vcd_var_type(vcd_trace_file::VCD_WIRE)
   , bit_width(0)
 {
@@ -504,7 +505,7 @@ vcd_sc_unsigned_trace::changed()
 void
 vcd_sc_unsigned_trace::write(FILE* f)
 {
-    static std::vector<char> compdata(1024), rawdata(1024);
+    static std::vector<char> compdata(1024); static std::vector<char> rawdata(1024);
     typedef std::vector<char>::size_type size_t;
 
     if ( compdata.size() <= static_cast<size_t>(object.length()) ) { // include trailing \0
@@ -565,7 +566,7 @@ vcd_sc_signed_trace::changed()
 void
 vcd_sc_signed_trace::write(FILE* f)
 {
-    static std::vector<char> compdata(1024), rawdata(1024);
+    static std::vector<char> compdata(1024); static std::vector<char> rawdata(1024);
     typedef std::vector<char>::size_type size_t;
 
     if ( compdata.size() <= static_cast<size_t>(object.length()) ) { // include trailing \0
@@ -627,7 +628,7 @@ vcd_sc_uint_base_trace::changed()
 void
 vcd_sc_uint_base_trace::write(FILE* f)
 {
-    char rawdata[1000], *rawdata_ptr = rawdata;
+    char rawdata[1000]; char *rawdata_ptr = rawdata;
     char compdata[1000];
 
     int bitindex;
@@ -682,7 +683,7 @@ vcd_sc_int_base_trace::changed()
 void
 vcd_sc_int_base_trace::write(FILE* f)
 {
-    char rawdata[1000], *rawdata_ptr = rawdata;
+    char rawdata[1000]; char *rawdata_ptr = rawdata;
     char compdata[1000];
 
     int bitindex;
@@ -816,7 +817,7 @@ vcd_sc_fxnum_trace::vcd_sc_fxnum_trace( const sc_dt::sc_fxnum& object_,
   old_value( object_.m_params.type_params(),
 	     object_.m_params.enc(),
 	     object_.m_params.cast_switch(),
-	     0 )
+	     nullptr )
 {
     old_value = object;
 }
@@ -830,7 +831,7 @@ vcd_sc_fxnum_trace::changed()
 void
 vcd_sc_fxnum_trace::write( FILE* f )
 {
-    static std::vector<char> compdata(1024), rawdata(1024);
+    static std::vector<char> compdata(1024); static std::vector<char> rawdata(1024);
     typedef std::vector<char>::size_type size_t;
 
     if ( compdata.size() <= static_cast<size_t>(object.wl()) ) { // include trailing \0
@@ -886,7 +887,7 @@ vcd_sc_fxnum_fast_trace::vcd_sc_fxnum_fast_trace(
   old_value( object_.m_params.type_params(),
 	     object_.m_params.enc(),
 	     object_.m_params.cast_switch(),
-	     0 )
+	     nullptr )
 {
     old_value = object;
 }
@@ -900,7 +901,7 @@ vcd_sc_fxnum_fast_trace::changed()
 void
 vcd_sc_fxnum_fast_trace::write( FILE* f )
 {
-    static std::vector<char> compdata(1024), rawdata(1024);
+    static std::vector<char> compdata(1024); static std::vector<char> rawdata(1024);
     typedef std::vector<char>::size_type size_t;
 
     if ( compdata.size() <= static_cast<size_t>(object.wl()) ) { // include trailing \0
@@ -1744,8 +1745,8 @@ private:
 
 
 vcd_scope::~vcd_scope() {
-    for (std::map<std::string, vcd_scope*>::iterator it = m_scopes.begin(); it != m_scopes.end(); ++it)
-        delete (*it).second;
+    for (auto& it : m_scopes)
+        delete it.second;
 }
 
 void vcd_scope::add_trace(vcd_trace *trace, bool with_scopes)
@@ -1779,13 +1780,13 @@ void vcd_scope::add_trace_rec(std::stringstream &ss, const std::string &cur_name
 void vcd_scope::print(FILE *fp, const char *scope_name) {
     fprintf(fp,"$scope module %s $end\n", scope_name);
 
-    for (std::vector<std::pair<std::string,vcd_trace*> >::iterator it = m_traces.begin(); it != m_traces.end(); ++it) {
-        it->second->set_width();
-        it->second->print_variable_declaration_line(fp, it->first.c_str());
+    for (auto const& it : m_traces) {
+        it.second->set_width();
+        it.second->print_variable_declaration_line(fp, it.first.c_str());
     }
 
-    for (std::map<std::string, vcd_scope*>::iterator it = m_scopes.begin(); it != m_scopes.end(); ++it)
-        it->second->print(fp,it->first.c_str());
+    for (auto const& it : m_scopes)
+        it.second->print(fp,it.first.c_str());
 
     fprintf(fp,"$upscope $end\n");
 }
@@ -1807,8 +1808,8 @@ void vcd_print_scopes(FILE *fp, std::vector<vcd_trace*>& traces) {
     if (with_scopes_s == "DISABLE") with_scopes = false;
     if (with_scopes_s == "ENABLE")  with_scopes = true;
 
-    for (std::vector<vcd_trace*>::iterator it = traces.begin(); it != traces.end(); ++it)
-        top_scope.add_trace(*it, with_scopes);
+    for (auto& it : traces)
+        top_scope.add_trace(it, with_scopes);
 
     top_scope.print(fp);
 }
@@ -1858,8 +1859,8 @@ vcd_trace_file::do_initialize()
     write_comment(ss.str());
 
     std::fputs("$dumpvars\n",fp);
-    for (int i = 0; i < (int)traces.size(); i++) {
-        traces[i]->write(fp);
+    for (auto & trace : traces) {
+        trace->write(fp);
         std::fputc('\n', fp);
     }
     std::fputs("$end\n\n", fp);
@@ -2008,7 +2009,7 @@ vcd_trace_file::cycle(bool this_is_a_delta_cycle)
     if( initialize() )
         return;
 
-    unit_type now_units_high, now_units_low;
+    unit_type now_units_high; unit_type now_units_low;
 
     bool time_advanced = get_time_stamp(now_units_high, now_units_low);
 
@@ -2136,13 +2137,12 @@ vcd_trace_file::obtain_name()
 
 vcd_trace_file::~vcd_trace_file()
 {
-    unit_type now_units_high, now_units_low;
+    unit_type now_units_high; unit_type now_units_low;
     if (is_initialized() && get_time_stamp(now_units_high,now_units_low)) {
         print_time_stamp(now_units_high, now_units_low);
     }
 
-    for( int i = 0; i < (int)traces.size(); i++ ) {
-        vcd_trace* t = traces[i];
+    for(auto t : traces) {
         delete t;
     }
 }
@@ -2189,13 +2189,13 @@ remove_vcd_name_problems(vcd_trace const* vcd, std::string& name)
 {
     static bool warned = false;
     bool braces_removed = false;
-    for (unsigned int i = 0; i< name.length(); i++) {
-      if (name[i] == '[') {
-	name[i] = '(';
+    for (char & i : name) {
+      if (i == '[') {
+	i = '(';
 	braces_removed = true;
       }
-      else if (name[i] == ']') {
-	name[i] = ')';
+      else if (i == ']') {
+	i = ')';
 	braces_removed = true;
       }
     }

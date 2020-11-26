@@ -36,8 +36,8 @@ template class SC_API tlm_array<tlm_extension_base*>;
 /* anonymous */ namespace {
 class tlm_extension_registry
 {
-    typedef unsigned int key_type;
-    typedef std::map<sc_core::sc_type_index, key_type> type_map;
+    using key_type = unsigned int;
+    using type_map = std::map<sc_core::sc_type_index, key_type>;
 public:
     static tlm_extension_registry& instance()
     {
@@ -48,7 +48,7 @@ public:
 
     unsigned int register_extension(sc_type_index type)
     {
-        type_map::const_iterator it = ids_.find( type );
+        auto it = ids_.find( type );
 
         if( it == ids_.end() ) { // new extension - generate/store ID
             type_map::value_type v( type, static_cast<key_type>(ids_.size()) );
@@ -64,11 +64,11 @@ public:
 private:
     static tlm_extension_registry* instance_;
     type_map ids_;
-    tlm_extension_registry() /* = default */ {}
+    tlm_extension_registry() /* = default */ = default;
 
 }; // class tlm_extension_registry
 
-tlm_extension_registry* tlm_extension_registry::instance_ = NULL;
+tlm_extension_registry* tlm_extension_registry::instance_ = nullptr;
 
 } //  anonymous namespace
 
@@ -95,27 +95,27 @@ tlm_extension_base::register_extension(const std::type_info& type)
 tlm_generic_payload::tlm_generic_payload()
   : m_address(0)
   , m_command(TLM_IGNORE_COMMAND)
-  , m_data(0)
+  , m_data(nullptr)
   , m_length(0)
   , m_response_status(TLM_INCOMPLETE_RESPONSE)
   , m_dmi(false)
-  , m_byte_enable(0)
+  , m_byte_enable(nullptr)
   , m_byte_enable_length(0)
   , m_streaming_width(0)
   , m_gp_option(TLM_MIN_PAYLOAD)
   , m_extensions(max_num_extensions())
-  , m_mm(0)
+  , m_mm(nullptr)
   , m_ref_count(0)
 {}
 
 tlm_generic_payload::tlm_generic_payload(tlm_mm_interface* mm)
   : m_address(0)
   , m_command(TLM_IGNORE_COMMAND)
-  , m_data(0)
+  , m_data(nullptr)
   , m_length(0)
   , m_response_status(TLM_INCOMPLETE_RESPONSE)
   , m_dmi(false)
-  , m_byte_enable(0)
+  , m_byte_enable(nullptr)
   , m_byte_enable_length(0)
   , m_streaming_width(0)
   , m_gp_option(TLM_MIN_PAYLOAD)
@@ -161,7 +161,7 @@ tlm_generic_payload::deep_copy_from(const tlm_generic_payload & other)
     if(m_extensions.size() < other.m_extensions.size()) {
         m_extensions.expand(other.m_extensions.size());
     }
-    for(unsigned int i=0; i<other.m_extensions.size(); i++)
+    for(auto i=0UL; i<other.m_extensions.size(); i++)
     {
         if(other.m_extensions[i])
         {                       //original has extension i
@@ -218,7 +218,7 @@ tlm_generic_payload::update_original_from(const tlm_generic_payload & other,
                 // Optimized implementation copies 64-bit words by masking
                 for (unsigned int i = 0; i < m_length; i += 8)
                 {
-                    typedef sc_dt::uint64* u;
+                    using u = sc_dt::uint64 *;
                     *reinterpret_cast<u>(&m_data[i]) &= ~*reinterpret_cast<u>(m_byte_enable);
                     *reinterpret_cast<u>(&m_data[i]) |= *reinterpret_cast<u>(&other.m_data[i]) &
                                                         *reinterpret_cast<u>(m_byte_enable);
@@ -229,7 +229,7 @@ tlm_generic_payload::update_original_from(const tlm_generic_payload & other,
                 // Optimized implementation copies 32-bit words by masking
                 for (unsigned int i = 0; i < m_length; i += 4)
                 {
-                    typedef unsigned int* u;
+                    using u = unsigned int *;
                     *reinterpret_cast<u>(&m_data[i]) &= ~*reinterpret_cast<u>(m_byte_enable);
                     *reinterpret_cast<u>(&m_data[i]) |= *reinterpret_cast<u>(&other.m_data[i]) &
                                                         *reinterpret_cast<u>(m_byte_enable);
@@ -273,7 +273,7 @@ void tlm_generic_payload::free_all_extensions()
         if(m_extensions[i])
         {
             m_extensions[i]->free();
-            m_extensions[i] = 0;
+            m_extensions[i] = nullptr;
         }
     }
 }
@@ -328,7 +328,7 @@ tlm_generic_payload::set_auto_extension(unsigned int index,
     tlm_extension_base* tmp = m_extensions[index];
     m_extensions[index] = ext;
     if (!tmp) m_extensions.insert_in_cache(&m_extensions[index]);
-    sc_assert(m_mm != 0);
+    sc_assert(m_mm != nullptr);
     return tmp;
 }
 
@@ -342,7 +342,7 @@ tlm_generic_payload::get_extension(unsigned int index) const
 void tlm_generic_payload::clear_extension(unsigned int index)
 {
     sc_assert(index < m_extensions.size());
-    m_extensions[index] = static_cast<tlm_extension_base*>(0);
+    m_extensions[index] = static_cast<tlm_extension_base*>(nullptr);
 }
 
 void tlm_generic_payload::release_extension(unsigned int index)
@@ -355,7 +355,7 @@ void tlm_generic_payload::release_extension(unsigned int index)
     else
     {
         m_extensions[index]->free();
-        m_extensions[index] = static_cast<tlm_extension_base*>(0);
+        m_extensions[index] = static_cast<tlm_extension_base*>(nullptr);
     }
 }
 

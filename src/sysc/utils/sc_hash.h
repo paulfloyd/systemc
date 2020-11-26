@@ -74,8 +74,8 @@ protected:
     unsigned do_hash(const void* key) const { return (*hash)(key) % num_bins; }
 
     sc_phash_elem* add_direct(void* key, void* contents, unsigned hash_val);
-    sc_phash_elem* find_entry_c(unsigned hv, const void* k, sc_phash_elem*** plast);
-    sc_phash_elem* find_entry_q(unsigned hv, const void* k, sc_phash_elem*** plast);
+    sc_phash_elem* find_entry_c(unsigned hash_val, const void* k, sc_phash_elem*** plast);
+    sc_phash_elem* find_entry_q(unsigned hash_val, const void* k, sc_phash_elem*** plast);
     sc_phash_elem* find_entry(unsigned hv, const void* k, sc_phash_elem*** plast=0) const
     {
       /* Got rid of member func. pointer and replaced with if-else  */
@@ -93,7 +93,7 @@ public:
                    double grow     = PHASH_DEFAULT_GROW_FACTOR,
                    bool   reorder  = PHASH_DEFAULT_REORDER_FLAG,
                    hash_fn_t hash_fn = default_ptr_hash_fn,
-                   cmpr_fn_t cmpr_fn = 0                             );
+                   cmpr_fn_t cmp_fn = 0                             );
     ~sc_phash_base();
 
     void set_cmpr_fn(cmpr_fn_t);
@@ -120,7 +120,7 @@ public:
     int remove_by_contents(bool (*predicate)(const void*, void*), void* arg);
     int remove_by_contents(const void* c, void (*kfree)(void*));
     int remove_by_contents(bool (*predicate)(const void*, void*), void* arg, void (*kfree)(void*));
-    int lookup(const void* k, void** pc) const;
+    int lookup(const void* k, void** c_ptr) const;
     bool contains(const void* k) const { return (lookup(k, 0) != 0); }
     void* operator[](const void* key) const;
 };

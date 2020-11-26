@@ -71,10 +71,10 @@ scfx_pow10::scfx_pow10()
 }
 
 scfx_pow10::~scfx_pow10()
-{}
+= default;
 
 
-const scfx_rep
+scfx_rep
 scfx_pow10::operator() ( int i )
 {
     if( i == 0 ) {
@@ -99,8 +99,8 @@ scfx_pow10::operator() ( int i )
 	}
 	return result;
     }
-    else
-    {
+    
+    
         i = -i;
 	int bit = scfx_find_msb( i );
 	scfx_rep result = *neg( bit );
@@ -117,7 +117,7 @@ scfx_pow10::operator() ( int i )
 	    }
 	}
 	return result;
-    }
+    
 }
 
 

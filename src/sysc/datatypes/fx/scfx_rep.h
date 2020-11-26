@@ -95,7 +95,7 @@ SC_API scfx_rep*  neg_scfx_rep( const scfx_rep& );
 SC_API scfx_rep*  mult_scfx_rep( const scfx_rep&, const scfx_rep&,
 	                  int max_wl = SC_DEFAULT_MAX_WL_ );
 SC_API scfx_rep*  div_scfx_rep( const scfx_rep&, const scfx_rep&,
-	                 int max_wl = SC_DEFAULT_DIV_WL_ );
+	                 int div_wl = SC_DEFAULT_DIV_WL_ );
 SC_API scfx_rep*  add_scfx_rep( const scfx_rep&, const scfx_rep&,
 	                 int max_wl = SC_DEFAULT_MAX_WL_ );
 SC_API scfx_rep*  sub_scfx_rep( const scfx_rep&, const scfx_rep&,
@@ -265,19 +265,19 @@ private:
 
     const scfx_index calc_indices( int ) const;
 
-    void o_extend( const scfx_index&, sc_enc );
-    bool o_bit_at( const scfx_index& ) const;
-    bool o_zero_left( const scfx_index& ) const;
-    bool o_zero_right( const scfx_index& ) const;
-    void o_set_low( const scfx_index&, sc_enc );
-    void o_set_high( const scfx_index&, const scfx_index&, sc_enc, int = 1 );
-    void o_set( const scfx_index&, const scfx_index&, sc_enc, bool );
-    void o_invert( const scfx_index& );
-    bool q_bit( const scfx_index& ) const;
-    void q_clear( const scfx_index& );
-    void q_incr( const scfx_index& );
-    bool q_odd( const scfx_index& ) const;
-    bool q_zero( const scfx_index& ) const;
+    void o_extend( sc_dt::scfx_index , sc_enc );
+    bool o_bit_at( sc_dt::scfx_index  ) const;
+    bool o_zero_left( sc_dt::scfx_index  ) const;
+    bool o_zero_right( sc_dt::scfx_index  ) const;
+    void o_set_low( sc_dt::scfx_index , sc_enc );
+    void o_set_high( sc_dt::scfx_index , sc_dt::scfx_index , sc_enc, int = 1 );
+    void o_set( sc_dt::scfx_index , sc_dt::scfx_index , sc_enc, bool );
+    void o_invert( sc_dt::scfx_index  );
+    bool q_bit( sc_dt::scfx_index  ) const;
+    void q_clear( sc_dt::scfx_index  );
+    void q_incr( sc_dt::scfx_index  );
+    bool q_odd( sc_dt::scfx_index  ) const;
+    bool q_zero( sc_dt::scfx_index  ) const;
 
     void resize_to( int, int = 0 );
     int  size() const;
@@ -521,7 +521,7 @@ scfx_rep::calc_indices( int n ) const
 
 inline
 void
-scfx_rep::o_extend( const scfx_index& x, sc_enc enc )
+scfx_rep::o_extend( sc_dt::scfx_index x, sc_enc enc )
 {
     int wi = x.wi();
     int bi = x.bi();
@@ -548,7 +548,7 @@ scfx_rep::o_extend( const scfx_index& x, sc_enc enc )
 
 inline
 bool
-scfx_rep::o_bit_at( const scfx_index& x ) const
+scfx_rep::o_bit_at( sc_dt::scfx_index x ) const
 {
     int wi = x.wi();
     int bi = x.bi();
@@ -560,7 +560,7 @@ scfx_rep::o_bit_at( const scfx_index& x ) const
 
 inline
 bool
-scfx_rep::o_zero_left( const scfx_index& x ) const
+scfx_rep::o_zero_left( sc_dt::scfx_index x ) const
 {
     int wi = x.wi();
     int bi = x.bi();
@@ -578,7 +578,7 @@ scfx_rep::o_zero_left( const scfx_index& x ) const
 
 inline
 bool
-scfx_rep::o_zero_right( const scfx_index& x ) const
+scfx_rep::o_zero_right( sc_dt::scfx_index x ) const
 {
     int wi = x.wi();
     int bi = x.bi();
@@ -594,7 +594,7 @@ scfx_rep::o_zero_right( const scfx_index& x ) const
 
 inline
 void
-scfx_rep::o_set_low( const scfx_index& x, sc_enc enc )
+scfx_rep::o_set_low( sc_dt::scfx_index x, sc_enc enc )
 {
     int wi = x.wi();
     int bi = x.bi();
@@ -614,7 +614,7 @@ scfx_rep::o_set_low( const scfx_index& x, sc_enc enc )
 
 inline
 void
-scfx_rep::o_set_high( const scfx_index& x, const scfx_index& x2,
+scfx_rep::o_set_high( sc_dt::scfx_index x, sc_dt::scfx_index x2,
 		      sc_enc enc, int sign )
 {
     int wi = x.wi();
@@ -649,7 +649,7 @@ scfx_rep::o_set_high( const scfx_index& x, const scfx_index& x2,
 
 inline
 void
-scfx_rep::o_set( const scfx_index& x, const scfx_index& x3,
+scfx_rep::o_set( sc_dt::scfx_index x, sc_dt::scfx_index x3,
 		 sc_enc enc, bool under )
 {
     int wi = x.wi();
@@ -686,7 +686,7 @@ scfx_rep::o_set( const scfx_index& x, const scfx_index& x3,
 
 inline
 void
-scfx_rep::o_invert( const scfx_index& x2 )
+scfx_rep::o_invert( sc_dt::scfx_index x2 )
 {
     int wi2 = x2.wi();
     int bi2 = x2.bi();
@@ -698,7 +698,7 @@ scfx_rep::o_invert( const scfx_index& x2 )
 
 inline
 bool
-scfx_rep::q_bit( const scfx_index& x ) const
+scfx_rep::q_bit( sc_dt::scfx_index x ) const
 {
     int wi = x.wi();
     int bi = x.bi();
@@ -715,7 +715,7 @@ scfx_rep::q_bit( const scfx_index& x ) const
 
 inline
 void
-scfx_rep::q_clear( const scfx_index& x )
+scfx_rep::q_clear( sc_dt::scfx_index x )
 {
     int wi = x.wi();
     int bi = x.bi();
@@ -729,7 +729,7 @@ scfx_rep::q_clear( const scfx_index& x )
 
 inline
 void
-scfx_rep::q_incr( const scfx_index& x )
+scfx_rep::q_incr( sc_dt::scfx_index x )
 {
     int wi = x.wi();
     int bi = x.bi();
@@ -753,7 +753,7 @@ scfx_rep::q_incr( const scfx_index& x )
 
 inline
 bool
-scfx_rep::q_odd( const scfx_index& x ) const
+scfx_rep::q_odd( sc_dt::scfx_index x ) const
 {
     int wi = x.wi();
     int bi = x.bi();
@@ -765,7 +765,7 @@ scfx_rep::q_odd( const scfx_index& x ) const
 
 inline
 bool
-scfx_rep::q_zero( const scfx_index& x ) const
+scfx_rep::q_zero( sc_dt::scfx_index x ) const
 {
     int wi = x.wi();
     int bi = x.bi();

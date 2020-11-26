@@ -68,7 +68,7 @@ namespace sc_dt
 // assignment operators
 
 inline
-const sc_signed&
+sc_signed&
 sc_signed::operator = ( const sc_fxval& v )
 {
     if( ! v.is_normal() ) /* also triggers OBSERVER_READ call */
@@ -85,7 +85,7 @@ sc_signed::operator = ( const sc_fxval& v )
 }
 
 inline
-const sc_signed&
+sc_signed&
 sc_signed::operator = ( const sc_fxval_fast& v )
 {
     if( ! v.is_normal() ) /* also triggers OBSERVER_READ call */
@@ -102,7 +102,7 @@ sc_signed::operator = ( const sc_fxval_fast& v )
 }
 
 inline
-const sc_signed&
+sc_signed&
 sc_signed::operator = ( const sc_fxnum& v )
 {
     if( ! v.is_normal() ) /* also triggers OBSERVER_READ call */
@@ -119,7 +119,7 @@ sc_signed::operator = ( const sc_fxnum& v )
 }
 
 inline
-const sc_signed&
+sc_signed&
 sc_signed::operator = ( const sc_fxnum_fast& v )
 {
     if( ! v.is_normal() ) /* also triggers OBSERVER_READ call */
@@ -143,7 +143,7 @@ sc_signed::operator = ( const sc_fxnum_fast& v )
 // assignment operators
 
 inline
-const sc_unsigned&
+sc_unsigned&
 sc_unsigned::operator = ( const sc_fxval& v )
 {
     if( ! v.is_normal() ) /* also triggers OBSERVER_READ call */
@@ -160,7 +160,7 @@ sc_unsigned::operator = ( const sc_fxval& v )
 }
 
 inline
-const sc_unsigned&
+sc_unsigned&
 sc_unsigned::operator = ( const sc_fxval_fast& v )
 {
     if( ! v.is_normal() ) /* also triggers OBSERVER_READ call */
@@ -177,7 +177,7 @@ sc_unsigned::operator = ( const sc_fxval_fast& v )
 }
 
 inline
-const sc_unsigned&
+sc_unsigned&
 sc_unsigned::operator = ( const sc_fxnum& v )
 {
     if( ! v.is_normal() ) /* also triggers OBSERVER_READ call */
@@ -194,7 +194,7 @@ sc_unsigned::operator = ( const sc_fxnum& v )
 }
 
 inline
-const sc_unsigned&
+sc_unsigned&
 sc_unsigned::operator = ( const sc_fxnum_fast& v )
 {
     if( ! v.is_normal() ) /* also triggers OBSERVER_READ call */

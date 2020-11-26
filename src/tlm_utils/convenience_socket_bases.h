@@ -29,8 +29,8 @@ namespace tlm_utils {
 class SC_API convenience_socket_base
 {
 public:
-  void display_warning(const char* msg) const;
-  void display_error(const char* msg) const;
+  void display_warning(const char* text) const;
+  void display_error(const char* text) const;
 protected:
   virtual ~convenience_socket_base(){}
 private:

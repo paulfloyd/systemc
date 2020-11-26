@@ -118,7 +118,7 @@ namespace sc_dt
     }
 #endif
 
-const std::string to_string( sc_numrep );
+std::string to_string( sc_numrep );
 
 inline
 ::std::ostream&
@@ -260,7 +260,7 @@ vec_div_large(int ulen, const sc_digit *u,
 extern
 SC_API void
 vec_div_small(int ulen, const sc_digit *u,
-              sc_digit v, sc_digit *w);
+              sc_digit v, sc_digit *q);
 
 
 // ----------------------------------------------------------------------------
@@ -306,7 +306,7 @@ vec_shift_left(int ulen, sc_digit *u, int nsl);
 
 extern
 SC_API void
-vec_shift_right(int vlen, sc_digit *u, int nsr, sc_digit fill = 0);
+vec_shift_right(int ulen, sc_digit *u, int nsr, sc_digit fill = 0);
 
 extern
 SC_API void

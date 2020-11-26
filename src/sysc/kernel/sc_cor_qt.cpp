@@ -52,7 +52,7 @@ static sc_cor_qt main_cor;
 
 // current coroutine
 
-static sc_cor_qt* curr_cor = 0;
+static sc_cor_qt* curr_cor = nullptr;
 
 // ----------------------------------------------------------------------------
 
@@ -94,7 +94,7 @@ sc_cor_qt::stack_protect( bool enable )
     const std::size_t pagesize = sc_pagesize();
     sc_assert( m_stack_size > ( 2 * pagesize ) );
 
-    std::size_t sp_addr = reinterpret_cast<std::size_t>(m_stack);
+    auto sp_addr = reinterpret_cast<std::size_t>(m_stack);
 #ifndef SC_HAVE_POSIX_MEMALIGN
     const std::size_t round_up_mask = pagesize - 1;
     if( sp_addr & round_up_mask ) { // misaligned allocation
@@ -104,7 +104,7 @@ sc_cor_qt::stack_protect( bool enable )
 
 #ifdef QUICKTHREADS_GROW_DOWN
     // Stacks grow from high address down to low address
-    caddr_t redzone = caddr_t( sp_addr );
+    auto redzone = caddr_t( sp_addr );
 #else
     // Stacks grow from low address up to high address
     caddr_t redzone = caddr_t( sp_addr + m_stack_size - pagesize );
@@ -128,7 +128,7 @@ sc_cor_qt::stack_protect( bool enable )
     if( ret != 0 ) // ignore mprotect error with warning
     {
         static bool mprotect_fail_warned_once = false;
-        if( mprotect_fail_warned_once == false )
+        if( !mprotect_fail_warned_once )
         {
             mprotect_fail_warned_once = true;
 
@@ -170,7 +170,7 @@ stack_alloc( void** buf, std::size_t* stack_size )
 
 #ifdef SC_HAVE_POSIX_MEMALIGN
     if( 0 != posix_memalign( buf, alignment, *stack_size ) ) {
-        *buf = NULL; // allocation failed
+        *buf = nullptr; // allocation failed
     }
     return *buf;
 #else
@@ -193,7 +193,7 @@ sc_cor_pkg_qt::sc_cor_pkg_qt( sc_simcontext* simc )
 {
     if( ++ instance_count == 1 ) {
 	// initialize the current coroutine
-	sc_assert( curr_cor == 0 );
+	sc_assert( curr_cor == nullptr );
 	curr_cor = &main_cor;
     }
 }
@@ -205,7 +205,7 @@ sc_cor_pkg_qt::~sc_cor_pkg_qt()
 {
     if( -- instance_count == 0 ) {
 	// cleanup the current coroutine
-	curr_cor = 0;
+	curr_cor = nullptr;
     }
 }
 
@@ -225,12 +225,12 @@ sc_cor_qt_wrapper( void* arg, void* cor, qt_userf_t* fn )
 sc_cor*
 sc_cor_pkg_qt::create( std::size_t stack_size, sc_cor_fn* fn, void* arg )
 {
-    sc_cor_qt* cor = new sc_cor_qt();
+    auto* cor = new sc_cor_qt();
     cor->m_pkg = this;
     cor->m_stack_size = stack_size;
 
     void* aligned_sp = stack_alloc( &cor->m_stack, &cor->m_stack_size );
-    if( aligned_sp == NULL )
+    if( aligned_sp == nullptr )
     {
         SC_REPORT_ERROR( SC_ID_STACK_SETUP_FAILED_
                        , "failed to allocate stack memory" );
@@ -250,16 +250,16 @@ void*
 sc_cor_qt_yieldhelp( qt_t* sp, void* old_cor, void* )
 {
     reinterpret_cast<sc_cor_qt*>( old_cor )->m_sp = sp;
-    return 0;
+    return nullptr;
 }
 
 void
 sc_cor_pkg_qt::yield( sc_cor* next_cor )
 {
-    sc_cor_qt* new_cor = static_cast<sc_cor_qt*>( next_cor );
+    auto* new_cor = dynamic_cast<sc_cor_qt*>( next_cor );
     sc_cor_qt* old_cor = curr_cor;
     curr_cor = new_cor;
-    QUICKTHREADS_BLOCK( sc_cor_qt_yieldhelp, old_cor, 0, new_cor->m_sp );
+    QUICKTHREADS_BLOCK( sc_cor_qt_yieldhelp, old_cor, nullptr, new_cor->m_sp );
 }
 
 
@@ -269,16 +269,16 @@ extern "C"
 void*
 sc_cor_qt_aborthelp( qt_t*, void*, void* )
 {
-    return 0;
+    return nullptr;
 }
 
 void
 sc_cor_pkg_qt::abort( sc_cor* next_cor )
 {
-    sc_cor_qt* new_cor = static_cast<sc_cor_qt*>( next_cor );
+    auto* new_cor = dynamic_cast<sc_cor_qt*>( next_cor );
     sc_cor_qt* old_cor = curr_cor;
     curr_cor = new_cor;
-    QUICKTHREADS_ABORT( sc_cor_qt_aborthelp, old_cor, 0, new_cor->m_sp );
+    QUICKTHREADS_ABORT( sc_cor_qt_aborthelp, old_cor, nullptr, new_cor->m_sp );
 }
 
 

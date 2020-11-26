@@ -821,7 +821,7 @@ protected:
 private:
 
     // disabled
-    const sc_signed_bitref_r& operator = ( const sc_signed_bitref_r& );
+    sc_signed_bitref_r& operator = ( const sc_signed_bitref_r& );
 };
 
 
@@ -861,9 +861,9 @@ public:
 
     // assignment operators
 
-    const sc_signed_bitref& operator = ( const sc_signed_bitref_r& );
-    const sc_signed_bitref& operator = ( const sc_signed_bitref& );
-    const sc_signed_bitref& operator = ( bool );
+    sc_signed_bitref& operator = ( const sc_signed_bitref_r& );
+    sc_signed_bitref& operator = ( const sc_signed_bitref& );
+    sc_signed_bitref& operator = ( bool );
 
     const sc_signed_bitref& operator &= ( bool );
     const sc_signed_bitref& operator |= ( bool );
@@ -994,7 +994,7 @@ protected:
     int        m_right;  // Right-most bit in this part selection.
 
 private:
-    const sc_signed_subref_r& operator = ( const sc_signed_subref_r& );
+    sc_signed_subref_r& operator = ( const sc_signed_subref_r& );
 
 };
 
@@ -1034,15 +1034,15 @@ public:
 
     // assignment operators
 
-    const sc_signed_subref& operator = ( const sc_signed_subref_r& a );
-    const sc_signed_subref& operator = ( const sc_signed_subref& a );
-    const sc_signed_subref& operator = ( const sc_signed& a );
+    sc_signed_subref& operator = ( const sc_signed_subref_r& a );
+    sc_signed_subref& operator = ( const sc_signed_subref& a );
+    sc_signed_subref& operator = ( const sc_signed& a );
 
-    const sc_signed_subref& operator = ( const sc_unsigned_subref_r& a );
-    const sc_signed_subref& operator = ( const sc_unsigned& a );
+    sc_signed_subref& operator = ( const sc_unsigned_subref_r& a );
+    sc_signed_subref& operator = ( const sc_unsigned& a );
 
     template< class T >
-    const sc_signed_subref& operator = ( const sc_generic_base<T>& a )
+    sc_signed_subref& operator = ( const sc_generic_base<T>& a )
     {
         sc_unsigned temp( length() );
 	a->to_sc_unsigned(temp);
@@ -1125,40 +1125,40 @@ public:
 
     // assignment operators
 
-    const sc_signed& operator = (const sc_signed&          v);
-    const sc_signed& operator = (const sc_signed_subref_r& a );
+    sc_signed& operator = (const sc_signed&          v);
+    sc_signed& operator = (const sc_signed_subref_r& a );
 
     template< class T >
-    const sc_signed& operator = ( const sc_generic_base<T>& a )
+    sc_signed& operator = (const sc_generic_base<T>& a )
         { a->to_sc_signed(*this); return *this; }
 
-    const sc_signed& operator = (const sc_unsigned&        v);
-    const sc_signed& operator = (const sc_unsigned_subref_r& a );
+    sc_signed& operator = (const sc_unsigned&        v);
+    sc_signed& operator = (const sc_unsigned_subref_r& a );
 
-    const sc_signed& operator = (const char*               v);
-    const sc_signed& operator = (int64                     v);
-    const sc_signed& operator = (uint64                    v);
-    const sc_signed& operator = (long                      v);
-    const sc_signed& operator = (unsigned long             v);
+    sc_signed& operator = (const char*               a);
+    sc_signed& operator = (int64                     v);
+    sc_signed& operator = (uint64                    v);
+    sc_signed& operator = (long                      v);
+    sc_signed& operator = (unsigned long             v);
 
-    const sc_signed& operator = (int                       v)
+    sc_signed& operator = (int                       v)
 	{ return operator=((long) v); }
 
-    const sc_signed& operator = (unsigned int              v)
+    sc_signed& operator = (unsigned int              v)
 	{ return operator=((unsigned long) v); }
 
-    const sc_signed& operator = (double                    v);
-    const sc_signed& operator = (const sc_int_base&        v);
-    const sc_signed& operator = (const sc_uint_base&       v);
+    sc_signed& operator = (double                    v);
+    sc_signed& operator = (const sc_int_base&        v);
+    sc_signed& operator = (const sc_uint_base&       v);
 
-    const sc_signed& operator = ( const sc_bv_base& );
-    const sc_signed& operator = ( const sc_lv_base& );
+    sc_signed& operator = ( const sc_bv_base& );
+    sc_signed& operator = ( const sc_lv_base& );
 
 #ifdef SC_INCLUDE_FX
-    const sc_signed& operator = ( const sc_fxval& );
-    const sc_signed& operator = ( const sc_fxval_fast& );
-    const sc_signed& operator = ( const sc_fxnum& );
-    const sc_signed& operator = ( const sc_fxnum_fast& );
+    sc_signed& operator = ( const sc_fxval& );
+    sc_signed& operator = ( const sc_fxval_fast& );
+    sc_signed& operator = ( const sc_fxnum& );
+    sc_signed& operator = ( const sc_fxnum_fast& );
 #endif
 
 
@@ -1320,8 +1320,8 @@ public:
 
     // explicit conversion to character string
 
-    const std::string to_string( sc_numrep numrep = SC_DEC ) const;
-    const std::string to_string( sc_numrep numrep, bool w_prefix ) const;
+    std::string to_string( sc_numrep numrep = SC_DEC ) const;
+    std::string to_string( sc_numrep numrep, bool w_prefix ) const;
 
 
     // Print functions. dump prints the internals of the class.

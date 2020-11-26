@@ -499,7 +499,7 @@ sc_int_base::operator = ( const sc_unsigned& a )
     }
     for( ; i < m_len; ++ i ) {
 	// zero extension
-	set( i, 0 );
+	set( i, false );
     }
     extend_sign();
     return *this;
@@ -516,7 +516,7 @@ sc_int_base::operator = ( const sc_bv_base& a )
     }
     for( ; i < m_len; ++ i ) {
 	// zero extension
-	set( i, 0 );
+	set( i, false );
     }
     extend_sign();
     return *this;
@@ -532,7 +532,7 @@ sc_int_base::operator = ( const sc_lv_base& a )
     }
     for( ; i < m_len; ++ i ) {
 	// zero extension
-	set( i, 0 );
+	set( i, false );
     }
     extend_sign();
     return *this;
@@ -541,7 +541,7 @@ sc_int_base::operator = ( const sc_lv_base& a )
 sc_int_base&
 sc_int_base::operator = ( const char* a )
 {
-    if( a == 0 ) {
+    if( a == nullptr ) {
 	SC_REPORT_ERROR( sc_core::SC_ID_CONVERSION_FAILED_,
 			 "character string is zero" );
     }
@@ -563,7 +563,7 @@ sc_int_base::operator = ( const char* a )
 
 // explicit conversion to character string
 
-const std::string
+std::string
 sc_int_base::to_string( sc_numrep numrep ) const
 {
     int len = m_len;
@@ -571,7 +571,7 @@ sc_int_base::to_string( sc_numrep numrep ) const
     return aa.to_string( numrep );
 }
 
-const std::string
+std::string
 sc_int_base::to_string( sc_numrep numrep, bool w_prefix ) const
 {
     int len = m_len;

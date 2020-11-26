@@ -696,7 +696,7 @@ sc_event::operator | ( const sc_event_or_list& e2 ) const
 
 inline
 sc_event_or_expr
-operator | ( sc_event_or_expr expr, sc_event const & e )
+operator | ( const sc_event_or_expr &expr, sc_event const & e )
 {
     expr.push_back( e );
     return expr;
@@ -704,7 +704,7 @@ operator | ( sc_event_or_expr expr, sc_event const & e )
 
 inline
 sc_event_or_expr
-operator | ( sc_event_or_expr expr, sc_event_or_list const & el )
+operator | ( const sc_event_or_expr &expr, sc_event_or_list const & el )
 {
     expr.push_back( el );
     return expr;
@@ -814,7 +814,7 @@ sc_event::operator & ( const sc_event_and_list& e2 ) const
 
 inline
 sc_event_and_expr
-operator & ( sc_event_and_expr expr, sc_event const & e )
+operator & ( const sc_event_and_expr &expr, sc_event const & e )
 {
     expr.push_back( e );
     return expr;
@@ -822,7 +822,7 @@ operator & ( sc_event_and_expr expr, sc_event const & e )
 
 inline
 sc_event_and_expr
-operator & ( sc_event_and_expr expr, sc_event_and_list const & el )
+operator & ( const sc_event_and_expr &expr, sc_event_and_list const & el )
 {
     expr.push_back( el );
     return expr;

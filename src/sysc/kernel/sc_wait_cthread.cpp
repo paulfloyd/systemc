@@ -52,7 +52,7 @@ halt( sc_simcontext* simc )
 	break;
     }
     default:
-	SC_REPORT_ERROR( SC_ID_HALT_NOT_ALLOWED_, 0 );
+	SC_REPORT_ERROR( SC_ID_HALT_NOT_ALLOWED_, nullptr );
 	break;
     }
 }
@@ -83,9 +83,9 @@ wait( int n, sc_simcontext* simc )
 void
 at_posedge( const sc_signal_in_if<bool>& s, sc_simcontext* simc )
 {
-    if( s.read() == true )
-        do { wait(simc); } while ( s.read() == true );
-    do { wait(simc); } while ( s.read() == false );
+    if( s.read() )
+        do { wait(simc); } while ( s.read() );
+    do { wait(simc); } while ( !s.read() );
 }
 
 void
@@ -99,9 +99,9 @@ at_posedge( const sc_signal_in_if<sc_dt::sc_logic>& s, sc_simcontext* simc )
 void
 at_negedge( const sc_signal_in_if<bool>& s, sc_simcontext* simc )
 {
-    if( s.read() == false )
-        do { wait(simc); } while ( s.read() == false );
-    do { wait(simc); } while ( s.read() == true );
+    if( !s.read() )
+        do { wait(simc); } while ( !s.read() );
+    do { wait(simc); } while ( s.read() );
 }
 
 void

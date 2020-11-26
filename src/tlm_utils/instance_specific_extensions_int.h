@@ -133,7 +133,7 @@ class SC_API instance_specific_extension_container
   static instance_specific_extension_container* create();
   void attach_carrier(instance_specific_extension_carrier*, void* txn, release_fn*);
 
-  instance_specific_extensions_per_accessor* get_accessor(unsigned int index);
+  instance_specific_extensions_per_accessor* get_accessor(unsigned int idx);
 
   std::vector<instance_specific_extensions_per_accessor*> m_ispex_per_accessor;
   unsigned int use_count;

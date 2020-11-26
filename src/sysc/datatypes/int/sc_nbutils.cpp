@@ -99,7 +99,7 @@ is_valid_base(sc_numrep base)
 //  Enumeration of number representations for character string conversion.
 // ----------------------------------------------------------------------------
 
-const std::string
+std::string
 to_string( sc_numrep numrep )
 {
     switch( numrep )
@@ -224,8 +224,8 @@ get_base_and_sign(const char *v, small_type &b, small_type &s)
       nskip += fsm_move(*u, b, s, state);
       if (state == STATE_FINISH)
         break;
-      else
-        ++u;
+      
+      ++u;
     }
   }
 
@@ -274,7 +274,7 @@ void parse_binary_bits(
 
     // MAKE SURE WE HAVE A STRING TO PARSE:
 
-    if( src_p == 0 ) {
+    if( src_p == nullptr ) {
         SC_REPORT_ERROR( sc_core::SC_ID_CONVERSION_FAILED_,
                          "character string is zero" );
         return;
@@ -410,7 +410,7 @@ void parse_hex_bits(
 
     // MAKE SURE WE HAVE A STRING TO PARSE:
 
-    if( src_p == 0 ) {
+    if( src_p == nullptr ) {
         SC_REPORT_ERROR( sc_core::SC_ID_CONVERSION_FAILED_,
                          "character string is zero" );
         return;
@@ -580,7 +580,7 @@ vec_from_str(int unb, int und, sc_digit *u,
 
   is_valid_base(base);
 
-  small_type b, s;  // base and sign.
+  small_type b; small_type s;  // base and sign.
 
   v = get_base_and_sign(v, b, s);
 
@@ -1254,10 +1254,10 @@ vec_div_large(int ulen, const sc_digit *u,
   uchar y[DIV_CEIL2(SC_MAX_NBITS, BITS_PER_BYTE)];
   uchar q[DIV_CEIL2(SC_MAX_NBITS, BITS_PER_BYTE)];
 #else
-  uchar *x = new uchar[xlen];
-  uchar *y = new uchar[ylen];
+  auto *x = new uchar[xlen];
+  auto *y = new uchar[ylen];
   // valgrind complains about us accessing too far to so leave a buffer.
-  uchar *q = new uchar[(xlen - ylen) + 10];
+  auto *q = new uchar[(xlen - ylen) + 10];
 #endif
 
   // q corresponds to w.
@@ -1457,8 +1457,8 @@ vec_rem_large(int ulen, const sc_digit *u,
   uchar x[DIV_CEIL2(SC_MAX_NBITS, BITS_PER_BYTE)];
   uchar y[DIV_CEIL2(SC_MAX_NBITS, BITS_PER_BYTE)];
 #else
-  uchar *x = new uchar[xlen];
-  uchar *y = new uchar[ylen];
+  auto *x = new uchar[xlen];
+  auto *y = new uchar[ylen];
 #endif
 
   // r corresponds to w.
@@ -1883,7 +1883,7 @@ vec_reverse(int unb, int und, sc_digit *ud,
 #ifdef SC_MAX_NBITS
   sc_digit d[MAX_NDIGITS];
 #else
-  sc_digit *d = new sc_digit[und];
+  auto *d = new sc_digit[und];
 #endif
 
   // d is a copy of ud.

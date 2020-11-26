@@ -118,7 +118,7 @@ class sc_process_table
       queue() : m_head() {}
       ~queue();
 
-      ProcessHandle head() const { return m_head; }
+      [[nodiscard]] ProcessHandle head() const { return m_head; }
       void          push_front(ProcessHandle h);
       ProcessHandle remove(ProcessHandle h);
     private:
@@ -130,9 +130,9 @@ class sc_process_table
     void push_front( sc_thread_handle handle )
       { m_threads.push_front(handle); }
 
-    sc_method_handle method_q_head() const
+    [[nodiscard]] sc_method_handle method_q_head() const
       { return m_methods.head(); }
-    sc_thread_handle thread_q_head() const
+    [[nodiscard]] sc_thread_handle thread_q_head() const
       { return m_threads.head(); }
 
     sc_method_handle remove( sc_method_handle handle )
@@ -203,19 +203,19 @@ sc_simcontext::remove_process( sc_thread_handle handle )
 SC_API int
 sc_notify_time_compare( const void* p1, const void* p2 )
 {
-    const sc_event_timed* et1 = static_cast<const sc_event_timed*>( p1 );
-    const sc_event_timed* et2 = static_cast<const sc_event_timed*>( p2 );
+    const auto* et1 = static_cast<const sc_event_timed*>( p1 );
+    const auto* et2 = static_cast<const sc_event_timed*>( p2 );
 
     const sc_time& t1 = et1->notify_time();
     const sc_time& t2 = et2->notify_time();
 
     if( t1 < t2 ) {
 	return 1;
-    } else if( t1 > t2 ) {
+    } if( t1 > t2 ) {
 	return -1;
-    } else {
+    } 
 	return 0;
-    }
+    
 }
 
 
@@ -231,8 +231,8 @@ SC_MODULE(sc_invoke_method)
       detach();
     }
 
-    virtual ~sc_invoke_method()
-    {}
+    ~sc_invoke_method() override
+    = default;
 
     // Method to call to execute a method's semantics.
 
@@ -286,7 +286,7 @@ SC_MODULE(sc_invoke_method)
         {
             DEBUG_MSG( DEBUG_NAME, m_method, "invoker executing method" );
 	    csc_p->set_curr_proc( (sc_process_b*)m_method );
-	    csc_p->get_active_invokers().push_back((sc_thread_handle)me);
+	    csc_p->get_active_invokers().push_back(dynamic_cast<sc_thread_handle>(me));
 	    m_method->run_process();
 	    csc_p->set_curr_proc( me );
 	    csc_p->get_active_invokers().pop_back();
@@ -320,13 +320,13 @@ sc_simcontext::init()
     m_phase_cb_registry = new sc_phase_callback_registry( *this );
     m_name_gen = new sc_name_gen;
     m_process_table = new sc_process_table;
-    m_current_writer = 0;
+    m_current_writer = nullptr;
 
 
     // CHECK FOR ENVIRONMENT VARIABLES THAT MODIFY SIMULATOR EXECUTION:
 
     const char* write_check = std::getenv("SC_SIGNAL_WRITE_CHECK");
-    sc_string_view write_check_s = (write_check != NULL) ? write_check : "";
+    sc_string_view write_check_s = (write_check != nullptr) ? write_check : "";
     if ( write_check_s == "DISABLE" )
         m_write_check = SC_SIGNAL_WRITE_CHECK_DISABLE_;
     else if ( write_check_s == "CONFLICT" )
@@ -353,11 +353,11 @@ sc_simcontext::init()
     m_ready_to_simulate = false;
     m_elaboration_done = false;
     m_execution_phase = phase_initialize;
-    m_error = NULL;
-    m_cor_pkg = 0;
-    m_method_invoker_p = NULL;
-    m_cor = 0;
-    m_reset_finder_q = 0;
+    m_error = nullptr;
+    m_cor_pkg = nullptr;
+    m_method_invoker_p = nullptr;
+    m_cor = nullptr;
+    m_reset_finder_q = nullptr;
     m_in_simulator_control = false;
     m_start_of_simulation_called = false;
     m_end_of_simulation_called = false;
@@ -399,21 +399,21 @@ sc_simcontext::clean()
 
 
 sc_simcontext::sc_simcontext() :
-    m_object_manager(0), m_module_registry(0), m_port_registry(0),
-    m_export_registry(0), m_prim_channel_registry(0),
-    m_phase_cb_registry(0), m_name_gen(0),
-    m_process_table(0), m_curr_proc_info(), m_current_writer(0),
+    m_object_manager(nullptr), m_module_registry(nullptr), m_port_registry(nullptr),
+    m_export_registry(nullptr), m_prim_channel_registry(nullptr),
+    m_phase_cb_registry(nullptr), m_name_gen(nullptr),
+    m_process_table(nullptr), m_current_writer(nullptr),
     m_write_check(SC_SIGNAL_WRITE_CHECK_DEFAULT_), m_next_proc_id(-1),
-    m_child_events(), m_child_objects(), m_delta_events(), m_timed_events(0),
-    m_trace_files(), m_something_to_trace(false), m_runnable(0), m_collectable(0),
+    m_timed_events(nullptr),
+    m_something_to_trace(false), m_runnable(nullptr), m_collectable(nullptr),
     m_time_params(), m_curr_time(SC_ZERO_TIME), m_max_time(SC_ZERO_TIME),
     m_change_stamp(0), m_delta_count(0), m_initial_delta_count_at_current_time(0),
     m_forced_stop(false), m_paused(false),
     m_ready_to_simulate(false), m_elaboration_done(false),
-    m_execution_phase(phase_initialize), m_error(0),
+    m_execution_phase(phase_initialize), m_error(nullptr),
     m_in_simulator_control(false), m_end_of_simulation_called(false),
     m_simulation_status(SC_ELABORATION), m_start_of_simulation_called(false),
-    m_cor_pkg(0), m_cor(0), m_reset_finder_q(0)
+    m_cor_pkg(nullptr), m_cor(nullptr), m_reset_finder_q(nullptr)
 {
     init();
 }
@@ -481,7 +481,7 @@ sc_simcontext::crunch( bool once )
 
 	    m_runnable->toggle_methods();
 	    sc_method_handle method_h = pop_runnable_method();
-	    while( method_h != 0 ) {
+	    while( method_h != nullptr ) {
 		empty_eval_phase = false;
 		if ( !method_h->run_process() )
 		{
@@ -494,12 +494,12 @@ sc_simcontext::crunch( bool once )
 
 	    m_runnable->toggle_threads();
 	    sc_thread_handle thread_h = pop_runnable_thread();
-	    while( thread_h != 0 ) {
-                if ( thread_h->m_cor_p != NULL ) break;
+	    while( thread_h != nullptr ) {
+                if ( thread_h->m_cor_p != nullptr ) break;
 		thread_h = pop_runnable_thread();
 	    }
 
-	    if( thread_h != 0 ) {
+	    if( thread_h != nullptr ) {
 	        empty_eval_phase = false;
 		m_cor_pkg->yield( thread_h->m_cor_p );
 	    }
@@ -732,7 +732,7 @@ sc_simcontext::prepare_to_simulate()
 	if ( ((method_p->m_state & sc_process_b::ps_bit_disabled) != 0) ||
 	     method_p->dont_initialize() )
 	{
-	    if ( method_p->m_static_events.size() == 0 )
+	    if ( method_p->m_static_events.empty() )
 	    {
 	        SC_REPORT_WARNING( SC_ID_DISABLE_WILL_ORPHAN_PROCESS_,
 		                   method_p->name() );
@@ -758,7 +758,7 @@ sc_simcontext::prepare_to_simulate()
 	if ( ((thread_p->m_state & sc_process_b::ps_bit_disabled) != 0) ||
 	     thread_p->dont_initialize() )
 	{
-	    if ( thread_p->m_static_events.size() == 0 )
+	    if ( thread_p->m_static_events.empty() )
 	    {
 	        SC_REPORT_WARNING( SC_ID_DISABLE_WILL_ORPHAN_PROCESS_,
 		                   thread_p->name() );
@@ -919,10 +919,10 @@ sc_simcontext::simulate( const sc_time& duration )
 		sc_event_timed* et = m_timed_events->extract_top();
 		sc_event* e = et->event();
 		delete et;
-		if( e != 0 ) {
+		if( e != nullptr ) {
 		    e->trigger();
 		}
-	    } while( m_timed_events->size() &&
+	    } while( !m_timed_events->empty() &&
 		     m_timed_events->top()->notify_time() == t );
 
 	} while( m_runnable->is_empty() );
@@ -1049,13 +1049,13 @@ sc_simcontext::hierarchy_push( sc_module* mod )
 sc_module*
 sc_simcontext::hierarchy_pop()
 {
-	return static_cast<sc_module*>( m_object_manager->hierarchy_pop() );
+	return dynamic_cast<sc_module*>( m_object_manager->hierarchy_pop() );
 }
 
 sc_module*
 sc_simcontext::hierarchy_curr() const
 {
-    return static_cast<sc_module*>( m_object_manager->hierarchy_curr() );
+    return dynamic_cast<sc_module*>( m_object_manager->hierarchy_curr() );
 }
 
 sc_object*
@@ -1157,7 +1157,7 @@ sc_simcontext::create_method_process(
     const char* name_p, bool free_host, SC_ENTRY_FUNC method_p,
     sc_process_host* host_p, const sc_spawn_options* opt_p )
 {
-    sc_method_handle handle =
+    auto handle =
         new sc_method_process(name_p, free_host, method_p, host_p, opt_p);
     if ( m_ready_to_simulate ) { // dynamic process
 	if ( !handle->dont_initialize() )
@@ -1179,7 +1179,7 @@ sc_simcontext::create_method_process(
                 push_runnable_method( handle );
             }
         }
-        else if ( handle->m_static_events.size() == 0 )
+        else if ( handle->m_static_events.empty() )
         {
             SC_REPORT_WARNING( SC_ID_DISABLE_WILL_ORPHAN_PROCESS_,
                                handle->name() );
@@ -1197,7 +1197,7 @@ sc_simcontext::create_thread_process(
     const char* name_p, bool free_host, SC_ENTRY_FUNC method_p,
     sc_process_host* host_p, const sc_spawn_options* opt_p )
 {
-    sc_thread_handle handle =
+    auto handle =
         new sc_thread_process(name_p, free_host, method_p, host_p, opt_p);
     if ( m_ready_to_simulate ) { // dynamic process
 	handle->prepare_for_simulation();
@@ -1220,7 +1220,7 @@ sc_simcontext::create_thread_process(
                 push_runnable_thread( handle );
             }
         }
-        else if ( handle->m_static_events.size() == 0 )
+        else if ( handle->m_static_events.empty() )
         {
             SC_REPORT_WARNING( SC_ID_DISABLE_WILL_ORPHAN_PROCESS_,
                                handle->name() );
@@ -1243,9 +1243,9 @@ void
 sc_simcontext::remove_trace_file( sc_trace_file* tf )
 {
     m_trace_files.erase(
-        std::remove( m_trace_files.begin(), m_trace_files.end(), tf )
+        std::remove( m_trace_files.begin(), m_trace_files.end(), tf ), m_trace_files.end()
     );
-    m_something_to_trace = ( m_trace_files.size() > 0 );
+    m_something_to_trace = ( !m_trace_files.empty() );
 }
 
 sc_cor*
@@ -1256,16 +1256,16 @@ sc_simcontext::next_cor()
     }
 
     sc_thread_handle thread_h = pop_runnable_thread();
-    while( thread_h != 0 ) {
-	if ( thread_h->m_cor_p != NULL ) break;
+    while( thread_h != nullptr ) {
+	if ( thread_h->m_cor_p != nullptr ) break;
 	thread_h = pop_runnable_thread();
     }
 
-    if( thread_h != 0 ) {
+    if( thread_h != nullptr ) {
 	return thread_h->m_cor_p;
-    } else {
+    } 
 	return m_cor;
-    }
+    
 }
 
 void
@@ -1371,9 +1371,9 @@ sc_simcontext::is_running() const
 bool
 sc_simcontext::next_time( sc_time& result ) const
 {
-    while( m_timed_events->size() ) {
+    while( !m_timed_events->empty() ) {
 	sc_event_timed* et = m_timed_events->top();
-	if( et->event() != 0 ) {
+	if( et->event() != nullptr ) {
 	    result = et->notify_time();
 	    return true;
 	}
@@ -1425,7 +1425,7 @@ sc_simcontext::preempt_with( sc_method_handle method_h )
 
     active_method_h = dynamic_cast<sc_method_handle>(sc_get_current_process_b());
     active_thread_h = dynamic_cast<sc_thread_handle>(sc_get_current_process_b());
-    if ( method_h->next_runnable() != NULL )
+    if ( method_h->next_runnable() != nullptr )
 	remove_runnable_method( method_h );
 
     // CALLER IS THE METHOD TO BE RUN:
@@ -1445,7 +1445,7 @@ sc_simcontext::preempt_with( sc_method_handle method_h )
     //   (d) Check to see if the calling method should throw an exception
     //       because of activity that occurred during the preemption.
 
-    else if ( active_method_h != NULL )
+    else if ( active_method_h != nullptr )
     {
 	caller_info = m_curr_proc_info;
         DEBUG_MSG( DEBUG_NAME, method_h,
@@ -1460,7 +1460,7 @@ sc_simcontext::preempt_with( sc_method_handle method_h )
     //
     //   (a) Use an invocation thread to execute the method.
 
-    else if ( active_thread_h != NULL )
+    else if ( active_thread_h != nullptr )
     {
         DEBUG_MSG( DEBUG_NAME, method_h,
 	           "preempting active thread with method" );
@@ -1537,8 +1537,8 @@ sc_simcontext::trace_cycle( bool delta_cycle )
 	static sc_simcontext sc_default_global_context;
 	sc_simcontext* sc_curr_simcontext = &sc_default_global_context;
 #else
-	SC_API sc_simcontext* sc_curr_simcontext = 0;
-	SC_API sc_simcontext* sc_default_global_context = 0;
+	SC_API sc_simcontext* sc_curr_simcontext = nullptr;
+	SC_API sc_simcontext* sc_default_global_context = nullptr;
 #endif
 #else
 // Not MT-safe!
@@ -1568,19 +1568,19 @@ sc_gen_unique_name( const char* basename_, bool preserve_first )
 {
     sc_simcontext* simc = sc_get_curr_simcontext();
     sc_module* curr_module = simc->hierarchy_curr();
-    if( curr_module != 0 ) {
+    if( curr_module != nullptr ) {
 	return curr_module->gen_unique_name( basename_, preserve_first );
-    } else {
+    } 
         sc_process_b* curr_proc_p = sc_get_current_process_b();
 	if ( curr_proc_p )
 	{
 	    return curr_proc_p->gen_unique_name( basename_, preserve_first );
 	}
-	else
-	{
+	
+	
 	    return simc->gen_unique_name( basename_, preserve_first );
-	}
-    }
+	
+    
 }
 
 // Get a handle for the current process
@@ -1620,7 +1620,7 @@ sc_get_curr_process_handle()
 bool
 sc_simcontext::pending_activity_at_current_time() const
 {
-    return ( m_delta_events.size() != 0) ||
+    return ( !m_delta_events.empty()) ||
            ( m_runnable->is_initialized() && !m_runnable->is_empty() ) ||
            m_prim_channel_registry->pending_updates();
 }
@@ -1641,12 +1641,12 @@ SC_API sc_time sc_time_to_pending_activity( const sc_simcontext* simc_p )
 
     // Any activity will take place in the future pick up the next event's time.
 
-    else
-    {
+    
+    
         result = simc_p->max_time();
         simc_p->next_time(result);
         result -= sc_time_stamp();
-    }
+    
     return result;
 }
 
@@ -2008,7 +2008,7 @@ print_status_expression( std::ostream& os, sc_status s )
         bits.push_back( (sc_status)( s & ~SC_STATUS_ANY ) );
 
     // print expression
-    std::vector<sc_status>::size_type i=0, n=bits.size();
+    std::vector<sc_status>::size_type i=0; std::vector<sc_status>::size_type n=bits.size();
     if ( n>1 )
         os << "(";
     for( ; i<n-1; ++i )

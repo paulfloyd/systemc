@@ -70,21 +70,21 @@ sc_signed_bitref_r::operator ~ () const
 
 // assignment operators
 
-const sc_signed_bitref&
+sc_signed_bitref&
 sc_signed_bitref::operator = ( const sc_signed_bitref_r& b )
 {
     m_obj_p->set( m_index, (bool) b );
     return *this;
 }
 
-const sc_signed_bitref&
+sc_signed_bitref&
 sc_signed_bitref::operator = ( const sc_signed_bitref& b )
 {
     m_obj_p->set( m_index, (bool) b );
     return *this;
 }
 
-const sc_signed_bitref&
+sc_signed_bitref&
 sc_signed_bitref::operator = ( bool b )
 {
     m_obj_p->set( m_index, b );

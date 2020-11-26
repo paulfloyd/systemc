@@ -57,7 +57,7 @@ namespace sc_dt
 //  Abstract base class for fixed-point types observers; arbitrary precision.
 // ----------------------------------------------------------------------------
 
-sc_fxnum_observer* (*sc_fxnum_observer::default_observer) () = 0;
+sc_fxnum_observer* (*sc_fxnum_observer::default_observer) () = nullptr;
 
 
 // ----------------------------------------------------------------------------
@@ -66,7 +66,7 @@ sc_fxnum_observer* (*sc_fxnum_observer::default_observer) () = 0;
 //  Abstract base class for fixed-point types observers; limited precision.
 // ----------------------------------------------------------------------------
 
-sc_fxnum_fast_observer* (*sc_fxnum_fast_observer::default_observer) () = 0;
+sc_fxnum_fast_observer* (*sc_fxnum_fast_observer::default_observer) () = nullptr;
 
 } // namespace sc_dt
 

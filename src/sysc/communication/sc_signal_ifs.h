@@ -75,8 +75,7 @@ protected:
 
     // constructor
 
-    sc_signal_in_if()
-	{}
+    sc_signal_in_if() = default;
 
 private:
 
@@ -131,8 +130,7 @@ protected:
 
     // constructor
 
-    sc_signal_in_if()
-	{}
+    sc_signal_in_if() = default;
 
 private:
 
@@ -189,8 +187,7 @@ protected:
 
     // constructor
 
-    sc_signal_in_if()
-	{}
+    sc_signal_in_if() = default;
 
 private:
 
@@ -237,8 +234,7 @@ protected:
 
     // constructor
 
-    sc_signal_inout_if()
-	{}
+    sc_signal_inout_if() = default;
 
 private:
 

@@ -457,7 +457,7 @@ bool sc_signed::and_reduce() const
 
 bool sc_signed::or_reduce() const
 {
-    return sgn == SC_ZERO ? false : true;
+    return sgn != SC_ZERO;
 }
 
 bool sc_signed::xor_reduce() const
@@ -468,7 +468,7 @@ bool sc_signed::xor_reduce() const
     odd = 0;
     for ( i = 0; i < nbits; i++ )
         if ( test(i) ) odd = ~odd;
-    return odd ? true : false;
+    return odd != 0;
 }
 
 
@@ -479,10 +479,10 @@ bool sc_signed::xor_reduce() const
 
 // assignment operators
 
-const sc_signed&
+sc_signed&
 sc_signed::operator = ( const char* a )
 {
-    if( a == 0 ) {
+    if( a == nullptr ) {
         SC_REPORT_ERROR( sc_core::SC_ID_CONVERSION_FAILED_,
                          "character string is zero" );
     }
@@ -502,7 +502,7 @@ sc_signed::operator = ( const char* a )
     return *this;
 }
 
-const sc_signed&
+sc_signed&
 sc_signed::operator=(int64 v)
 {
   sgn = get_sign(v);
@@ -517,7 +517,7 @@ sc_signed::operator=(int64 v)
   return *this;
 }
 
-const sc_signed&
+sc_signed&
 sc_signed::operator=(uint64 v)
 {
   sgn = get_sign(v);
@@ -531,7 +531,7 @@ sc_signed::operator=(uint64 v)
   return *this;
 }
 
-const sc_signed&
+sc_signed&
 sc_signed::operator=(long v)
 {
   sgn = get_sign(v);
@@ -546,7 +546,7 @@ sc_signed::operator=(long v)
   return *this;
 }
 
-const sc_signed&
+sc_signed&
 sc_signed::operator=(unsigned long v)
 {
   sgn = get_sign(v);
@@ -560,7 +560,7 @@ sc_signed::operator=(unsigned long v)
   return *this;
 }
 
-const sc_signed&
+sc_signed&
 sc_signed::operator=(double v)
 {
   is_bad_double(v);
@@ -587,7 +587,7 @@ sc_signed::operator=(double v)
 
 // ----------------------------------------------------------------------------
 
-const sc_signed&
+sc_signed&
 sc_signed::operator = ( const sc_bv_base& v )
 {
     int minlen = sc_min( nbits, v.length() );
@@ -596,13 +596,13 @@ sc_signed::operator = ( const sc_bv_base& v )
 	safe_set( i, v.get_bit( i ), digit );
     }
     for( ; i < nbits; ++ i ) {
-	safe_set( i, 0, digit );  // zero-extend
+	safe_set( i, false, digit );  // zero-extend
     }
     convert_2C_to_SM();
     return *this;
 }
 
-const sc_signed&
+sc_signed&
 sc_signed::operator = ( const sc_lv_base& v )
 {
     int minlen = sc_min( nbits, v.length() );
@@ -611,7 +611,7 @@ sc_signed::operator = ( const sc_lv_base& v )
 	safe_set( i, sc_logic( v.get_bit( i ) ).to_bool(), digit );
     }
     for( ; i < nbits; ++ i ) {
-	safe_set( i, 0, digit );  // zero-extend
+	safe_set( i, false, digit );  // zero-extend
     }
     convert_2C_to_SM();
     return *this;
@@ -620,7 +620,7 @@ sc_signed::operator = ( const sc_lv_base& v )
 
 // explicit conversion to character string
 
-const std::string
+std::string
 sc_signed::to_string( sc_numrep numrep ) const
 {
     int len = length();
@@ -628,7 +628,7 @@ sc_signed::to_string( sc_numrep numrep ) const
     return aa.to_string( numrep );
 }
 
-const std::string
+std::string
 sc_signed::to_string( sc_numrep numrep, bool w_prefix ) const
 {
     int len = length();
@@ -641,7 +641,7 @@ sc_signed::to_string( sc_numrep numrep, bool w_prefix ) const
 //  SECTION: Interfacing with sc_int_base
 // ----------------------------------------------------------------------------
 
-const sc_signed&
+sc_signed&
 sc_signed::operator = (const sc_int_base& v)
 { return operator=((int64) v); }
 
@@ -890,7 +890,7 @@ operator >= (const sc_int_base& u, const sc_signed& v)
 //  SECTION: Interfacing with sc_uint_base
 // ----------------------------------------------------------------------------
 
-const sc_signed&
+sc_signed&
 sc_signed::operator = (const sc_uint_base& v)
 { return operator=((uint64) v); }
 
@@ -1093,29 +1093,29 @@ operator >= (const sc_uint_base& u, const sc_signed& v)
 #define CONVERT_LONG(u) \
 small_type u ## s = get_sign(u);                        \
 sc_digit u ## d[DIGITS_PER_ULONG];                    \
-from_uint(DIGITS_PER_ULONG, u ## d, (unsigned long) u);
+from_uint(DIGITS_PER_ULONG, u ## d, (unsigned long) (u));
 
 #define CONVERT_LONG_2(u) \
 sc_digit u ## d[DIGITS_PER_ULONG];                     \
-from_uint(DIGITS_PER_ULONG, u ## d, (unsigned long) u);
+from_uint(DIGITS_PER_ULONG, u ## d, (unsigned long) (u));
 
 #define CONVERT_INT(u) \
 small_type u ## s = get_sign(u);                        \
 sc_digit u ## d[DIGITS_PER_UINT];                    \
-from_uint(DIGITS_PER_UINT, u ## d, (unsigned int) u);
+from_uint(DIGITS_PER_UINT, u ## d, (unsigned int) (u));
 
 #define CONVERT_INT_2(u) \
 sc_digit u ## d[DIGITS_PER_UINT];                     \
-from_uint(DIGITS_PER_UINT, u ## d, (unsigned int) u);
+from_uint(DIGITS_PER_UINT, u ## d, (unsigned int) (u));
 
 #define CONVERT_INT64(u) \
 small_type u ## s = get_sign(u);                   \
 sc_digit u ## d[DIGITS_PER_UINT64];              \
-from_uint(DIGITS_PER_UINT64, u ## d, (uint64) u);
+from_uint(DIGITS_PER_UINT64, u ## d, (uint64) (u));
 
 #define CONVERT_INT64_2(u) \
 sc_digit u ## d[DIGITS_PER_UINT64];              \
-from_uint(DIGITS_PER_UINT64, u ## d, (uint64) u);
+from_uint(DIGITS_PER_UINT64, u ## d, (uint64) (u));
 
 
 // ----------------------------------------------------------------------------
@@ -4051,9 +4051,9 @@ sc_signed::iszero() const
 {
   if (sgn == SC_ZERO)
     return true;
-  else if (sgn != SC_NOSIGN)
+  if (sgn != SC_NOSIGN)
     return false;
-  else
+  
     return check_for_zero(ndigits, digit);
 }
 
@@ -4062,10 +4062,10 @@ bool
 sc_signed::sign() const
 {
   if (sgn == SC_NEG)
-    return 1;
-  else if (sgn != SC_NOSIGN)
-    return 0;
-  else
+    return true;
+  if (sgn != SC_NOSIGN)
+    return false;
+  
     return ((digit[ndigits - 1] & one_and_zeros(bit_ord(nbits - 1))) != 0);
 }
 

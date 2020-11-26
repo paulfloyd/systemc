@@ -41,7 +41,7 @@ namespace sc_core {
 
 // we can't assume global availability of uintptr_t,
 // approximate it by size_t
-typedef std::size_t uintptr_t;
+using uintptr_t = std::size_t;
 
 SC_API const double PHASH_DEFAULT_GROW_FACTOR     = 2.0;
 
@@ -50,14 +50,14 @@ class SC_API sc_phash_elem {
     friend class sc_phash_base_iter;
 
 private:
-    void* key;
-    void* contents;
-    sc_phash_elem* next;
+    void* key{nullptr};
+    void* contents{nullptr};
+    sc_phash_elem* next{nullptr};
 
     sc_phash_elem( void* k, void* c, sc_phash_elem* n )
         : key(k), contents(c), next(n) { }
-    sc_phash_elem() : key(0), contents(0), next(0) { }
-    ~sc_phash_elem() { }
+    sc_phash_elem() = default;
+    ~sc_phash_elem() = default;
 
     static void* operator new(std::size_t sz)
         { return sc_mempool::allocate(sz); }
@@ -76,7 +76,7 @@ sc_phash_base::sc_phash_base(
     int (*cmp_fn)(const void*, const void*)
 ) :
     default_value(def), num_bins(0), num_entries(0), max_density(density),
-    reorder_flag(reorder), grow_factor(grow), bins(0), hash(hash_fn),
+    reorder_flag(reorder), grow_factor(grow), bins(nullptr), hash(hash_fn),
     cmpr(cmp_fn)
 {
     if (size <= 0)
@@ -86,7 +86,7 @@ sc_phash_base::sc_phash_base(
     num_bins = size;
     bins = new sc_phash_elem*[size];
     for (int i = 0; i < size; ++i)
-        bins[i] = 0;
+        bins[i] = nullptr;
 }
 
 void
@@ -108,7 +108,7 @@ sc_phash_base::~sc_phash_base()
 
     for (int i = 0; i < num_bins; ++i) {
         ptr = bins[i];
-        while (ptr != 0) {
+        while (ptr != nullptr) {
             next = ptr->next;
             delete ptr;
             ptr = next;
@@ -137,7 +137,7 @@ sc_phash_base::rehash()
 
     for (int i = 0; i < old_num_bins; ++i) {
         ptr = old_bins[i];
-        while (ptr != 0) {
+        while (ptr != nullptr) {
             next = ptr->next;
             hash_val = do_hash(ptr->key);
             ptr->next = bins[hash_val];
@@ -156,12 +156,12 @@ sc_phash_base::find_entry_q( unsigned hash_val, const void* key, sc_phash_elem**
     sc_phash_elem*  ptr  = *last;
 
     /* The (ptr->key != key) here is meant by the "q" */
-    while ((ptr != 0) && (ptr->key != key)) {
+    while ((ptr != nullptr) && (ptr->key != key)) {
         /*                         ^^ right here */
         last = &(ptr->next);
         ptr  = *last;
     }
-    if ((ptr != 0) && reorder_flag) {
+    if ((ptr != nullptr) && reorder_flag) {
         *last = ptr->next;
         ptr->next = bins[hash_val];
         bins[hash_val] = ptr;
@@ -177,12 +177,12 @@ sc_phash_base::find_entry_c( unsigned hash_val, const void* key, sc_phash_elem**
     sc_phash_elem** last = &(bins[hash_val]);
     sc_phash_elem*  ptr  = *last;
 
-    while ((ptr != 0) && ((*cmpr)(ptr->key, key) != 0)) {
+    while ((ptr != nullptr) && ((*cmpr)(ptr->key, key) != 0)) {
         last = &(ptr->next);
         ptr = *last;
     }
     /* Bring to front */
-    if ((ptr != 0) && reorder_flag) {
+    if ((ptr != nullptr) && reorder_flag) {
         *last = ptr->next;
         ptr->next = bins[hash_val];
         bins[hash_val] = ptr;
@@ -200,7 +200,7 @@ sc_phash_base::add_direct( void* key, void* contents, unsigned hash_val )
         hash_val = do_hash(key);
     }
 
-    sc_phash_elem* new_entry = new sc_phash_elem(key, contents, bins[hash_val]);
+    auto* new_entry = new sc_phash_elem(key, contents, bins[hash_val]);
     bins[hash_val] = new_entry;
     ++num_entries;
     return new_entry;
@@ -211,13 +211,13 @@ sc_phash_base::erase()
 {
     for (int i = 0; i < num_bins; ++i) {
         sc_phash_elem* ptr = bins[i];
-        while (ptr != 0) {
+        while (ptr != nullptr) {
             sc_phash_elem* next = ptr->next;
             delete ptr;
             ptr = next;
             --num_entries;
         }
-        bins[i] = 0;
+        bins[i] = nullptr;
     }
     sc_assert(num_entries == 0);
 }
@@ -227,14 +227,14 @@ sc_phash_base::erase(void (*kfree)(void*))
 {
     for (int i = 0; i < num_bins; ++i) {
         sc_phash_elem* ptr = bins[i];
-        while (ptr != 0) {
+        while (ptr != nullptr) {
             sc_phash_elem* next = ptr->next;
             (*kfree)(ptr->key);
             delete ptr;
             ptr = next;
             --num_entries;
         }
-        bins[i] = 0;
+        bins[i] = nullptr;
     }
     sc_assert(num_entries == 0);
 }
@@ -262,14 +262,14 @@ sc_phash_base::insert( void* k, void* c )
 {
     unsigned hash_val = do_hash(k);
     sc_phash_elem* ptr = find_entry( hash_val, k );
-    if (ptr == 0) {
+    if (ptr == nullptr) {
         (void) add_direct(k, c, hash_val);
         return 0;
     }
-    else {
+    
         ptr->contents = c;
         return 1;
-    }
+    
 }
 
 int
@@ -277,14 +277,14 @@ sc_phash_base::insert( void* k, void* c, void* (*kdup)(const void*) )
 {
     unsigned hash_val = do_hash(k);
     sc_phash_elem* ptr = find_entry( hash_val, k );
-    if (ptr == 0) {
+    if (ptr == nullptr) {
         (void) add_direct((*kdup)(k), c, hash_val);
         return 0;
     }
-    else {
+    
         ptr->contents = c;
         return 1;
-    }
+    
 }
 
 int
@@ -292,11 +292,11 @@ sc_phash_base::insert_if_not_exists( void* k, void* c )
 {
     unsigned hash_val = do_hash(k);
     sc_phash_elem* ptr = find_entry( hash_val, k );
-    if (ptr == 0) {
+    if (ptr == nullptr) {
         (void) add_direct( k, c, hash_val );
         return 0;
     }
-    else
+    
         return 1;
 }
 
@@ -305,11 +305,11 @@ sc_phash_base::insert_if_not_exists( void* k, void* c, void* (*kdup)(const void*
 {
     unsigned hash_val = do_hash(k);
     sc_phash_elem* ptr = find_entry( hash_val, k );
-    if (ptr == 0) {
+    if (ptr == nullptr) {
         (void) add_direct( (*kdup)(k), c, hash_val );
         return 0;
     }
-    else
+    
         return 1;
 }
 
@@ -320,7 +320,7 @@ sc_phash_base::remove( const void* k )
     sc_phash_elem** last;
     sc_phash_elem*  ptr = find_entry( hash_val, k, &last );
 
-    if (ptr == 0)
+    if (ptr == nullptr)
         return 0;
 
     sc_assert(*last == ptr);
@@ -337,15 +337,15 @@ sc_phash_base::remove( const void* k, void** pk, void** pc )
     sc_phash_elem** last;
     sc_phash_elem*  ptr = find_entry( hash_val, k, &last );
 
-    if (ptr == 0) {
-        *pk = 0;
-        *pc = 0;
+    if (ptr == nullptr) {
+        *pk = nullptr;
+        *pc = nullptr;
         return 0;
     }
-    else {
+    
         *pk = ptr->key;
         *pc = ptr->contents;
-    }
+    
 
     sc_assert(*last == ptr);
     *last = ptr->next;
@@ -363,7 +363,7 @@ sc_phash_base::remove(const void* k, void (*kfree)(void*))
         (*kfree)(rk);
         return 1;
     }
-    else
+    
         return 0;
 }
 
@@ -377,7 +377,7 @@ sc_phash_base::remove_by_contents( const void* c )
     for (int i = 0; i < num_bins; ++i) {
         last = &(bins[i]);
         ptr = *last;
-        while (ptr != 0) {
+        while (ptr != nullptr) {
             if (ptr->contents != c) {
                 last = &(ptr->next);
                 ptr  = *last;
@@ -404,7 +404,7 @@ sc_phash_base::remove_by_contents( bool (*predicate)(const void* c, void* arg), 
     for (int i = 0; i < num_bins; ++i) {
         last = &(bins[i]);
         ptr = *last;
-        while (ptr != 0) {
+        while (ptr != nullptr) {
             if (! (*predicate)(ptr->contents, arg)) {
                 last = &(ptr->next);
                 ptr  = *last;
@@ -431,7 +431,7 @@ sc_phash_base::remove_by_contents( const void* c, void (*kfree)(void*) )
     for (int i = 0; i < num_bins; ++i) {
         last = &(bins[i]);
         ptr = *last;
-        while (ptr != 0) {
+        while (ptr != nullptr) {
             if (ptr->contents != c) {
                 last = &(ptr->next);
                 ptr  = *last;
@@ -459,7 +459,7 @@ sc_phash_base::remove_by_contents( bool (*predicate)(const void*, void*), void* 
     for (int i = 0; i < num_bins; ++i) {
         last = &(bins[i]);
         ptr = *last;
-        while (ptr != 0) {
+        while (ptr != nullptr) {
             if (! (*predicate)(ptr->contents, arg)) {
                 last = &(ptr->next);
                 ptr  = *last;
@@ -482,14 +482,14 @@ sc_phash_base::lookup( const void* k, void** c_ptr ) const
 {
     unsigned hash_val = do_hash(k);
     sc_phash_elem* ptr = find_entry( hash_val, k );
-    if (ptr == 0) {
-        if (c_ptr != 0) *c_ptr = default_value;
+    if (ptr == nullptr) {
+        if (c_ptr != nullptr) *c_ptr = default_value;
         return 0;
     }
-    else {
-        if (c_ptr != 0) *c_ptr = ptr->contents;
+    
+        if (c_ptr != nullptr) *c_ptr = ptr->contents;
         return 1;
-    }
+    
 }
 
 void*
@@ -507,11 +507,11 @@ sc_phash_base_iter::reset( sc_phash_base* t )
 {
     table = t;
     index = 0;
-    entry = 0;
-    next  = 0;
+    entry = nullptr;
+    next  = nullptr;
 
     for (int i = index; i < table->num_bins; ++i) {
-        if (table->bins[i] != 0) {
+        if (table->bins[i] != nullptr) {
             index = i + 1;
             last  = &(table->bins[i]);
             entry = *last;
@@ -524,7 +524,7 @@ sc_phash_base_iter::reset( sc_phash_base* t )
 bool
 sc_phash_base_iter::empty() const
 {
-    return (entry == 0);
+    return (entry == nullptr);
 }
 
 void
@@ -536,7 +536,7 @@ sc_phash_base_iter::step()
     entry = next;
     if (! entry) {
         for (int i = index; i < table->num_bins; ++i) {
-            if (table->bins[i] != 0) {
+            if (table->bins[i] != nullptr) {
                 index = i + 1;
                 last = &(table->bins[i]);
                 entry = *last;
@@ -555,7 +555,7 @@ sc_phash_base_iter::remove()
 {
     delete entry;
     *last = next;
-    entry = 0;
+    entry = nullptr;
     --table->num_entries;
     step();
 }
@@ -566,7 +566,7 @@ sc_phash_base_iter::remove(void (*kfree)(void*))
     (*kfree)(entry->key);
     delete entry;
     *last = next;
-    entry = 0;
+    entry = nullptr;
     --table->num_entries;
     step();
 }

@@ -83,7 +83,7 @@ wait( const sc_event& e, sc_simcontext* simc )
     }
     case SC_CTHREAD_PROC_: {
         warn_cthread_wait();
-	sc_cthread_handle cthread_h =
+	auto cthread_h =
             reinterpret_cast<sc_cthread_handle>( cpi->process_handle );
 	cthread_h->wait( e );
 	cthread_h->wait_cycles();
@@ -115,7 +115,7 @@ wait( const sc_event_or_list& el, sc_simcontext* simc )
         warn_cthread_wait();
         SC_REPORT_INFO(SC_ID_IEEE_1666_DEPRECATION_,
 	    "wait(event_list) is deprecated for SC_CTHREAD, use SC_THREAD");
-	sc_cthread_handle cthread_h =
+	auto cthread_h =
             reinterpret_cast<sc_cthread_handle>( cpi->process_handle );
 	cthread_h->wait( el );
 	cthread_h->wait_cycles();
@@ -145,7 +145,7 @@ wait( const sc_event_and_list& el, sc_simcontext* simc )
     }
     case SC_CTHREAD_PROC_: {
         warn_cthread_wait();
-	sc_cthread_handle cthread_h =
+	auto cthread_h =
             reinterpret_cast<sc_cthread_handle>( cpi->process_handle );
 	cthread_h->wait( el );
 	cthread_h->wait_cycles();
@@ -169,7 +169,7 @@ wait( const sc_time& t, sc_simcontext* simc )
     }
     case SC_CTHREAD_PROC_: {
         warn_cthread_wait();
-	sc_cthread_handle cthread_h =
+	auto cthread_h =
             reinterpret_cast<sc_cthread_handle>( cpi->process_handle );
 	cthread_h->wait( t );
 	cthread_h->wait_cycles();
@@ -193,7 +193,7 @@ wait( const sc_time& t, const sc_event& e, sc_simcontext* simc )
     }
     case SC_CTHREAD_PROC_: {
         warn_cthread_wait();
-	sc_cthread_handle cthread_h =
+	auto cthread_h =
             reinterpret_cast<sc_cthread_handle>( cpi->process_handle );
 	cthread_h->wait( t, e );
 	cthread_h->wait_cycles();
@@ -223,7 +223,7 @@ wait( const sc_time& t, const sc_event_or_list& el, sc_simcontext* simc )
     }
     case SC_CTHREAD_PROC_: {
         warn_cthread_wait();
-	sc_cthread_handle cthread_h =
+	auto cthread_h =
             reinterpret_cast<sc_cthread_handle>( cpi->process_handle );
 	cthread_h->wait( t, el );
 	cthread_h->wait_cycles();
@@ -253,7 +253,7 @@ wait( const sc_time& t, const sc_event_and_list& el, sc_simcontext* simc )
     }
     case SC_CTHREAD_PROC_: {
         warn_cthread_wait();
-	sc_cthread_handle cthread_h =
+	auto cthread_h =
             reinterpret_cast<sc_cthread_handle>( cpi->process_handle );
 	cthread_h->wait( t, el );
 	cthread_h->wait_cycles();

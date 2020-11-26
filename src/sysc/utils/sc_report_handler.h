@@ -53,8 +53,8 @@ struct SC_API sc_msg_def
     int          id; // backward compatibility with 2.0+
 };
 
-typedef void (* sc_report_handler_proc)(const sc_report&, const sc_actions &);
 class sc_report;
+typedef void (* sc_report_handler_proc)(const sc_report&, sc_actions);
 extern SC_API bool sc_report_close_default_log();
 class SC_API sc_report_handler
 {
@@ -105,7 +105,7 @@ public:
     static sc_report_handler_proc set_handler(sc_report_handler_proc);
     static sc_report_handler_proc get_handler();
     // use set_handler(NULL); to restore default handler
-    static void default_handler(const sc_report&, const sc_actions&);
+    static void default_handler(const sc_report&, sc_core::sc_actions );
 
     static sc_actions get_new_action_id();
 
@@ -115,7 +115,7 @@ public:
     // if filename is NULL, the previous log file name will be removed.
     // The provider of a report_handler supposed to handle this.
     // Return false if filename is not NULL and filename is already set.
-    static bool set_log_file_name(const char* filename);
+    static bool set_log_file_name(const char* name_);
     static const char* get_log_file_name();
 
     // how the implementation should handle caught (sc_report) exceptions
@@ -167,7 +167,7 @@ public:
 
     static void report(sc_severity,
 		       int         id,
-		       const char* add_msg,
+		       const char* msg_,
 		       const char* file,
 		       int         line);
 

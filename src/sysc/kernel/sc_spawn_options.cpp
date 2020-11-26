@@ -44,7 +44,7 @@ class sc_spawn_reset_base
     sc_spawn_reset_base( bool async, bool level )
       : m_async( async ), m_level(level)
     {}
-    virtual ~sc_spawn_reset_base() {}
+    virtual ~sc_spawn_reset_base() = default;
     virtual void specify_reset() = 0;
 
   protected:
@@ -63,8 +63,8 @@ class sc_spawn_reset : public sc_spawn_reset_base
     sc_spawn_reset( bool async, const SOURCE& source, bool level )
       : sc_spawn_reset_base(async, level), m_source(source)
     {}
-    virtual ~sc_spawn_reset() {}
-    virtual void specify_reset()
+    ~sc_spawn_reset() override = default;
+    void specify_reset() override
     {
         sc_reset::reset_signal_is( m_async, m_source, m_level );
     }

@@ -1332,10 +1332,10 @@ public:
 
     // write the new value
 
-    void write( const data_type& value_ )
+    void write( sc_core::sc_inout<bool>::data_type value_ )
 	{ (*this)->write( value_ ); }
 
-    this_type& operator = ( const data_type& value_ )
+    this_type& operator = ( sc_core::sc_inout<bool>::data_type value_ )
 	{ (*this)->write( value_ ); return *this; }
 
     this_type& operator = ( const in_if_type& interface_ )
@@ -1353,7 +1353,7 @@ public:
 
     // set initial value (can also be called when port is not bound yet)
 
-    void initialize( const data_type& value_ );
+    void initialize( sc_core::sc_inout<bool>::data_type value_ );
 
     void initialize( const in_if_type& interface_ )
 	{ initialize( interface_.read() ); }

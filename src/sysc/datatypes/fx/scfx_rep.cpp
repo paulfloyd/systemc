@@ -369,7 +369,7 @@ union scfx_rep_node
 };
 
 
-static scfx_rep_node* list = 0;
+static scfx_rep_node* list = nullptr;
 
 
 void*
@@ -385,10 +385,10 @@ scfx_rep::operator new( std::size_t size )
 	list = new scfx_rep_node[ALLOC_SIZE];
 	for( int i = 0; i < ALLOC_SIZE - 1; i ++ )
 	    list[i].next = list + i + 1;
-	list[ALLOC_SIZE - 1].next = 0;
+	list[ALLOC_SIZE - 1].next = nullptr;
     }
 
-    scfx_rep* ptr = reinterpret_cast<scfx_rep*>( list->data );
+    auto* ptr = reinterpret_cast<scfx_rep*>( list->data );
     list = list->next;
 
     return ptr;
@@ -403,7 +403,7 @@ void scfx_rep::operator delete( void* ptr, std::size_t size )
 	return;
     }
 
-    scfx_rep_node* node = static_cast<scfx_rep_node*>( ptr );
+    auto* node = static_cast<scfx_rep_node*>( ptr );
     node->next = list;
     list = node;
 }
@@ -429,7 +429,7 @@ void scfx_rep::operator delete( void* ptr, std::size_t size )
 void
 scfx_rep::from_string( const char* s, int cte_wl )
 {
-    SCFX_FAIL_IF_( s == 0 || *s == 0 );
+    SCFX_FAIL_IF_( s == nullptr || *s == 0 );
 
     scfx_string s2;
     s2 += s;
@@ -661,7 +661,7 @@ scfx_rep::from_string( const char* s, int cte_wl )
 	}
         case 10:
 	{
-	    word carry, temp;
+	    word carry; word temp;
 	    int length = int_digits + frac_digits;
 	    resize_to( sc_max( min_mant, n_word( 4 * length ) ) );
 
@@ -1130,9 +1130,9 @@ print_other( scfx_string& s, const scfx_rep& a, sc_numrep numrep, int w_prefix,
 
     numrep = numrep2;
 
-    int msb, lsb;
+    int msb; int lsb;
 
-    if( params != 0 )
+    if( params != nullptr )
     {
 	msb = params->iwl() - 1;
 	lsb = params->iwl() - params->wl();
@@ -1632,11 +1632,11 @@ multiply( scfx_rep& result, const scfx_rep& lhs, const scfx_rep& rhs,
     len_lhs <<= 1;
     len_rhs <<= 1;
 
-    int i1, i2;
+    int i1; int i2;
 
     for( i1 = 0; i1 * half_word_incr < len_lhs; i1 += half_word_incr )
     {
-	word_short ls;
+	word_short ls{};
 	ls.l = 0;
 
 	half_word v1 = s1[i1];
@@ -1939,22 +1939,22 @@ cmp_scfx_rep( const scfx_rep& a, const scfx_rep& b )
 		{
 		    return 0;
 		}
-		else
-		{
+		
+		
 		    return 1;
-		}
+		
 	    }
-	    else
-	    {
+	    
+	    
 		if( b.is_inf() && b.is_neg() )
 		{
 		    return 0;
 		}
-		else
-		{
+		
+		
 		    return -1;
-		}
-	    }
+		
+	    
 	}
 	if( b.is_inf() )
 	{
@@ -1962,10 +1962,10 @@ cmp_scfx_rep( const scfx_rep& a, const scfx_rep& b )
 	    {
 		return -1;
 	    }
-	    else
-	    {
+	    
+	    
 		return 1;
-	    }
+	    
 	}
     }
 
@@ -2358,18 +2358,18 @@ compare_msw_ff( const scfx_rep& lhs, const scfx_rep& rhs )
 	{
 	    return -1;
 	}
-	else
-	{
+	
+	
 	    return 1;
-	}
+	
   }
 
   if( lhs.m_mant[lhs_index] < rhs.m_mant[rhs_index] )
   {
       return -1;
-  } else {
+  } 
       return 1;
-  }
+  
 }
 
 
@@ -2388,7 +2388,7 @@ scfx_rep::divide_by_ten()
 
     unsigned int remainder = 0;
 
-    word_short ls;
+    word_short ls{};
     ls.l = 0;
 
 #if defined( SC_BIG_ENDIAN )
@@ -2482,7 +2482,7 @@ scfx_rep::normalize( int exponent )
 scfx_mant*
 scfx_rep::resize( int new_size, int new_wp ) const
 {
-    scfx_mant *result = new scfx_mant( new_size );
+    auto *result = new scfx_mant( new_size );
 
     result->clear();
 
@@ -2662,7 +2662,7 @@ scfx_rep::set( int i, const scfx_params& params )
     {
 	if( is_neg() )
 	    return true;
-	else
+	
 	    resize_to( x.wi() + 1, 1 );
     }
     else if( x.wi() < 0 )
@@ -2704,7 +2704,7 @@ scfx_rep::clear( int i, const scfx_params& params )
     {
 	if( ! is_neg() )
 	    return true;
-	else
+	
 	    resize_to( x.wi() + 1, 1 );
     }
     else if( x.wi() < 0 )

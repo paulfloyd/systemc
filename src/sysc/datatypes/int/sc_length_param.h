@@ -99,7 +99,7 @@ public:
     int len() const;
     void len( int );
 
-    const std::string to_string() const;
+    std::string to_string() const;
 
     void print( ::std::ostream& = ::std::cout ) const;
     void dump( ::std::ostream& = ::std::cout ) const;

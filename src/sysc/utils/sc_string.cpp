@@ -70,7 +70,7 @@ class SC_API sc_string_rep
         *str = '\0';
     }
 
-    sc_string_rep( const char* s ) : ref_count(1), alloc(0), str(0)
+    sc_string_rep( const char* s ) : ref_count(1), alloc(0), str(nullptr)
     {
         if (s) {
             alloc = 1 + strlen(s);
@@ -102,7 +102,7 @@ class SC_API sc_string_rep
 // IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 sc_string_rep::sc_string_rep( const char* s, int n) :
-    ref_count(1), alloc(0), str(0)
+    ref_count(1), alloc(0), str(nullptr)
 {
     if (s && n>0) {
         alloc = 1 + n;
@@ -185,7 +185,7 @@ sc_string_old
 sc_string_old::operator+( const char* s ) const
 {
     int len = length();
-    sc_string_rep* r = new sc_string_rep( len + strlen(s) + 1 );
+    auto* r = new sc_string_rep( len + strlen(s) + 1 );
     strcpy( r->str, rep->str );
     strcpy( r->str + len, s );
     return sc_string_old(r);
@@ -194,7 +194,7 @@ sc_string_old::operator+( const char* s ) const
 sc_string_old sc_string_old::operator+(char c) const
 {
     int len = length();
-    sc_string_rep* r = new sc_string_rep( len + 2 );
+    auto* r = new sc_string_rep( len + 2 );
     strcpy( r->str, rep->str );
     r->str[len] = c;
     r->str[len+1] = 00;
@@ -205,7 +205,7 @@ sc_string_old
 operator+( const char* s, const sc_string_old& t )
 {
     int len = strlen(s);
-    sc_string_rep* r = new sc_string_rep( len + t.length() + 1 );
+    auto* r = new sc_string_rep( len + t.length() + 1 );
     strcpy( r->str, s );
     strcpy( r->str + len, t );
     return sc_string_old(r);
@@ -215,7 +215,7 @@ sc_string_old
 sc_string_old::operator+( const sc_string_old& s ) const
 {
     int len = length();
-    sc_string_rep* r = new sc_string_rep( len + s.length() + 1 );
+    auto* r = new sc_string_rep( len + s.length() + 1 );
     strcpy( r->str, rep->str );
     strcpy( r->str + len, s.rep->str );
     return sc_string_old(r);
@@ -391,7 +391,7 @@ sc_string_old sc_string_old::to_string(const char* format, ...)
    {
      int buf_size = 1024;
      const int max_size = 65000;
-     char* buf = 0; // dynamic string buffer
+     char* buf = nullptr; // dynamic string buffer
      do
      {
        delete[] buf;
@@ -446,7 +446,7 @@ sc_string_old::fmt_length()const
     unsigned result=0;
     if((*this)[0]!='%')
 	return 0;
-    else
+    
 	result++;
     if(is_delimiter("-+0 #",result)) // flags
 	result++;
@@ -491,9 +491,9 @@ sc_string_old::pos( const sc_string_old& sub_string ) const
     }
     if( found ) {
         return -- ind;
-    } else {
+    } 
         return -1;
-    }
+    
 }
 
 sc_string_old&

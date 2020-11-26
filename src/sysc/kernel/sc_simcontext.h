@@ -34,7 +34,7 @@
 #include "sysc/kernel/sc_process.h"
 #include "sysc/kernel/sc_status.h"
 #include "sysc/kernel/sc_time.h"
-#include "sysc/utils/sc_hash.h"
+//#include "sysc/utils/sc_hash.h"
 #include "sysc/utils/sc_pq.h"
 
 #if defined(_MSC_VER) && !defined(SC_WIN_DLL_WARN)
@@ -379,7 +379,7 @@ private:
     sc_time                     m_curr_time;
     mutable sc_time             m_max_time;
  
-    sc_invoke_method*           m_method_invoker_p;
+    sc_invoke_method*           m_method_invoker_p{};
     sc_dt::uint64               m_change_stamp; // "time" change occurred.
     sc_dt::uint64               m_delta_count;
     sc_dt::uint64               m_initial_delta_count_at_current_time;

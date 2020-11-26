@@ -838,8 +838,8 @@ public:
 
     // explicit conversion to character string
 
-    const std::string to_string( sc_numrep numrep = SC_DEC ) const;
-    const std::string to_string( sc_numrep numrep, bool w_prefix ) const;
+    std::string to_string( sc_numrep numrep = SC_DEC ) const;
+    std::string to_string( sc_numrep numrep, bool w_prefix ) const;
 
 
     // other methods

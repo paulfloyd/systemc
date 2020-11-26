@@ -44,12 +44,10 @@ sc_phase_callback_registry::sc_phase_callback_registry( sc_simcontext& simc )
 #if 0
   , m_cb_eval_vec()
 #endif
-  , m_cb_update_vec()
-  , m_cb_timestep_vec()
 {}
 
 sc_phase_callback_registry::~sc_phase_callback_registry()
-{}
+= default;
 
 static const sc_phase_callback_registry::mask_type
   SC_PHASE_CALLBACK_MASK = SC_STATUS_ANY;
@@ -63,7 +61,7 @@ struct entry_match
       : ref_(ref)
     {}
 
-    bool operator()( const sc_phase_callback_registry::entry& e ) const
+    bool operator()( sc_phase_callback_registry::entry e ) const
         { return e.target == ref_; }
 private:
     sc_phase_callback_registry::cb_type * ref_;
@@ -158,7 +156,7 @@ sc_phase_callback_registry::validate_mask( cb_type& cb
 sc_phase_callback_registry::mask_type
 sc_phase_callback_registry::register_callback( cb_type& cb, mask_type m )
 {
-    storage_type::iterator it =
+    auto it =
       find_if( m_cb_vec.begin(), m_cb_vec.end(), entry_match(&cb) );
 
     m = validate_mask(cb, m, /* warn */ true );
@@ -199,7 +197,7 @@ sc_phase_callback_registry::register_callback( cb_type& cb, mask_type m )
 sc_phase_callback_registry::mask_type
 sc_phase_callback_registry::unregister_callback( cb_type& cb, mask_type m )
 {
-    storage_type::iterator it =
+    auto it =
       find_if( m_cb_vec.begin(), m_cb_vec.end(), entry_match(&cb) );
 
     m = validate_mask(cb, m);
@@ -238,13 +236,12 @@ sc_phase_callback_registry::unregister_callback( cb_type& cb, mask_type m )
 void
 sc_phase_callback_registry::do_callback( sc_status s ) const
 {
-    typedef storage_type::const_iterator it_type;
     storage_type const & vec = m_cb_vec;
 
-    for(it_type it = vec.begin(), end = vec.end(); it != end; ++it) {
-        if( s & it->mask ) {
-            sc_object::hierarchy_scope scope(it->target);
-            it->target->do_simulation_phase_callback();
+    for(auto it : vec) {
+        if( s & it.mask ) {
+            sc_object::hierarchy_scope scope(it.target);
+            it.target->do_simulation_phase_callback();
         }
     }
 }

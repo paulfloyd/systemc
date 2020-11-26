@@ -47,7 +47,7 @@ void
 sc_semaphore::report_error( const char* id, const char* add_msg ) const
 {
     std::stringstream msg;
-    if (add_msg != 0)
+    if (add_msg != nullptr)
         msg << add_msg << ": ";
     msg << "semaphore '" << name() << "'";
     SC_REPORT_ERROR( id, msg.str().c_str() );

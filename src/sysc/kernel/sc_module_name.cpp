@@ -39,8 +39,8 @@ namespace sc_core {
 
 sc_module_name::sc_module_name( const char* name_ )
 : m_name( name_ ),
-  m_module_p( 0 ),
-  m_next( 0 ),
+  m_module_p( nullptr ),
+  m_next( nullptr ),
   m_simc( sc_get_curr_simcontext() ),
   m_pushed( true )
 {
@@ -49,8 +49,8 @@ sc_module_name::sc_module_name( const char* name_ )
 
 sc_module_name::sc_module_name( const sc_module_name& name_ )
 : m_name( name_.m_name ),
-  m_module_p( 0 ),
-  m_next( 0 ),
+  m_module_p( nullptr ),
+  m_next( nullptr ),
   m_simc( name_.m_simc ),
   m_pushed( false )
 {}
@@ -60,7 +60,7 @@ sc_module_name::~sc_module_name()
     if( m_pushed ) {
         sc_module_name* smn = m_simc->get_object_manager()->pop_module_name();
         if( this != smn ) {
-            SC_REPORT_ERROR( SC_ID_SC_MODULE_NAME_USE_, 0 );
+            SC_REPORT_ERROR( SC_ID_SC_MODULE_NAME_USE_, nullptr );
         }
 	if ( m_module_p ) m_module_p->end_module();
     }

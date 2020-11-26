@@ -45,7 +45,7 @@ void
 sc_event_finder::report_error( const char* id, const char* add_msg ) const
 {
     std::stringstream msg;
-    if (add_msg != 0)
+    if (add_msg != nullptr)
         msg << add_msg << ": ";
     msg << "port '" << m_port.name() << "' (" << m_port.kind() << ")";
     SC_REPORT_ERROR( id, msg.str().c_str() );
@@ -63,7 +63,7 @@ sc_event_finder::sc_event_finder( const sc_port_base& port_ )
 // destructor (does nothing)
 
 sc_event_finder::~sc_event_finder()
-{}
+= default;
 
 } // namespace sc_core
 

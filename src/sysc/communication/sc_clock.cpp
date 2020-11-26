@@ -178,7 +178,7 @@ sc_clock::sc_clock( const char* name_,
     if ( warn_sc_clock )
     {
         warn_sc_clock = false;
-	SC_REPORT_INFO(SC_ID_IEEE_1666_DEPRECATION_, 
+    SC_REPORT_INFO(static_cast<const char*>(SC_ID_IEEE_1666_DEPRECATION_),
 	   "\n    sc_clock(const char*, double, double, double, bool)\n"
 	   "    is deprecated use a form that includes sc_time or\n"
 	   "    sc_time_unit");
@@ -251,7 +251,7 @@ void sc_clock::before_end_of_elaboration()
 // destructor (does nothing)
 
 sc_clock::~sc_clock()
-{}
+= default;
 
 void sc_clock::register_port( sc_port_base& /*port*/, const char* if_typename_ )
 {
@@ -286,7 +286,7 @@ void
 sc_clock::report_error( const char* id, const char* add_msg ) const
 {
     std::stringstream msg;
-    if( add_msg != 0 )
+    if( add_msg != nullptr )
       msg << add_msg << ": ";
     msg << "clock '" << name() << "'";
     SC_REPORT_ERROR( id, msg.str().c_str() );

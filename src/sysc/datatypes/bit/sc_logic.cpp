@@ -89,9 +89,9 @@ void
 sc_logic::invalid_01() const
 {
     if( (int) m_val == Log_Z ) {
-	SC_REPORT_WARNING( sc_core::SC_ID_LOGIC_Z_TO_BOOL_, 0 );
+	SC_REPORT_WARNING( sc_core::SC_ID_LOGIC_Z_TO_BOOL_, nullptr );
     } else {
-	SC_REPORT_WARNING( sc_core::SC_ID_LOGIC_X_TO_BOOL_, 0 );
+	SC_REPORT_WARNING( sc_core::SC_ID_LOGIC_X_TO_BOOL_, nullptr );
     }
 }
 
@@ -118,7 +118,7 @@ const sc_logic_value_t sc_logic::char_to_logic[128] =
     Log_X, Log_X, Log_Z, Log_X, Log_X, Log_X, Log_X, Log_X
 };
 
-const char sc_logic::logic_to_char[4] = { '0', '1', 'Z', 'X' };
+const std::array<char, 4> sc_logic::logic_to_char = { '0', '1', 'Z', 'X' };
 
 const sc_logic_value_t sc_logic::and_table[4][4] =
 {
@@ -144,7 +144,7 @@ const sc_logic_value_t sc_logic::xor_table[4][4] =
     { Log_X, Log_X, Log_X, Log_X }
 };
 
-const sc_logic_value_t sc_logic::not_table[4] =
+const std::array<sc_logic_value_t, 4> sc_logic::not_table =
     { Log_1, Log_0, Log_X, Log_X  };
 
 

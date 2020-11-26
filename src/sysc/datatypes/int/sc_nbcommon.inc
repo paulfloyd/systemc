@@ -234,7 +234,7 @@ CLASS_TYPE::CLASS_TYPE(const sc_unsigned_subref_r& v) :
 // ----------------------------------------------------------------------------
 
 // Assignment from v of the same type.
-const CLASS_TYPE&
+CLASS_TYPE&
 CLASS_TYPE::operator=(const CLASS_TYPE& v)
 {
   if (this != &v) {
@@ -254,7 +254,7 @@ CLASS_TYPE::operator=(const CLASS_TYPE& v)
 
 
 // Assignment from v of the different type.
-const CLASS_TYPE&
+CLASS_TYPE&
 CLASS_TYPE::operator=(const OTHER_CLASS_TYPE& v)
 {
   sgn = v.sgn;
@@ -270,7 +270,7 @@ CLASS_TYPE::operator=(const OTHER_CLASS_TYPE& v)
 
 
 // Assignment from an sc_unsigned_subref_r
-const CLASS_TYPE&
+CLASS_TYPE&
 CLASS_TYPE::operator=(const sc_unsigned_subref_r& v)
 {
   return operator=(sc_unsigned(v));
@@ -278,7 +278,7 @@ CLASS_TYPE::operator=(const sc_unsigned_subref_r& v)
 
 
 // Assignment from an sc_signed_subref_r
-const CLASS_TYPE&
+CLASS_TYPE&
 CLASS_TYPE::operator=(const sc_signed_subref_r& v)
 {
   return operator=(sc_unsigned(v));

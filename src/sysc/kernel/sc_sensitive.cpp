@@ -81,14 +81,14 @@ warn_no_parens()
 sc_sensitive::sc_sensitive( sc_module* module_ )
 : m_module( module_ ),
   m_mode( SC_NONE_ ),
-  m_handle( 0 )
+  m_handle( nullptr )
 {}
 
 
 // destructor
 
 sc_sensitive::~sc_sensitive()
-{}
+= default;
 
 
 // changing between process handles
@@ -373,14 +373,14 @@ static void sc_deprecated_sensitive_pos()
 sc_sensitive_pos::sc_sensitive_pos( sc_module* module_ )
 : m_module( module_ ),
   m_mode( SC_NONE_ ),
-  m_handle( 0 )
+  m_handle( nullptr )
 {}
 
 
 // destructor
 
 sc_sensitive_pos::~sc_sensitive_pos()
-{}
+= default;
 
 
 // changing between process handles
@@ -648,14 +648,14 @@ static void sc_deprecated_sensitive_neg()
 sc_sensitive_neg::sc_sensitive_neg( sc_module* module_ )
 : m_module( module_ ),
   m_mode( SC_NONE_ ),
-  m_handle( 0 )
+  m_handle( nullptr )
 {}
 
 
 // destructor
 
 sc_sensitive_neg::~sc_sensitive_neg()
-{}
+= default;
 
 
 // changing between process handles

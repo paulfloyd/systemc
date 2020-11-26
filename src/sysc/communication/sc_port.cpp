@@ -48,12 +48,12 @@ namespace sc_core {
 struct sc_bind_elem
 {
     // constructors
-    sc_bind_elem();
+    sc_bind_elem() = default;
     explicit sc_bind_elem( sc_interface* interface_ );
     explicit sc_bind_elem( sc_port_base* parent_ );
 
-    sc_interface* iface;
-    sc_port_base* parent;
+    sc_interface* iface{ nullptr };
+    sc_port_base* parent{ nullptr };
 };
 
 
@@ -61,18 +61,13 @@ struct sc_bind_elem
 
 // constructors
 
-sc_bind_elem::sc_bind_elem()
-: iface( 0 ),
-  parent( 0 )
-{}
-
 sc_bind_elem::sc_bind_elem( sc_interface* interface_ )
 : iface( interface_ ),
-  parent( 0 )
+  parent( nullptr )
 {}
 
 sc_bind_elem::sc_bind_elem( sc_port_base* parent_ )
-: iface( 0 ),
+: iface( nullptr ),
   parent( parent_ )
 {}
 
@@ -108,8 +103,7 @@ sc_bind_ef::sc_bind_ef( sc_process_b* handle_,
 // destructor
 
 sc_bind_ef::~sc_bind_ef()
-{
-}
+= default;
 
 
 // ----------------------------------------------------------------------------
@@ -118,7 +112,7 @@ sc_bind_ef::~sc_bind_ef()
 
 struct sc_bind_info
 {
-    typedef std::vector<sc_bind_ef*> ef_vector;
+    using ef_vector = std::vector<sc_bind_ef *>;
 
     // constructor
     explicit sc_bind_info( int max_size_, 
@@ -127,9 +121,9 @@ struct sc_bind_info
     // destructor
     ~sc_bind_info();
 
-    int            max_size() const;
-    sc_port_policy policy() const; 
-    int            size() const;
+    [[nodiscard]] int            max_size() const;
+    [[nodiscard]] sc_port_policy policy() const; 
+    [[nodiscard]] int            size() const;
 
     int                        m_max_size;
     sc_port_policy             m_policy;
@@ -151,13 +145,10 @@ struct sc_bind_info
 sc_bind_info::sc_bind_info( int max_size_, sc_port_policy policy_ )
 : m_max_size( max_size_ ),
   m_policy( policy_ ),
-  vec(),
   has_parent( false ),
   last_add( -1 ),
   is_leaf( true ),
-  complete( false ),
-  thread_vec(),
-  method_vec()
+  complete( false )
 {}
 
 
@@ -218,8 +209,8 @@ void sc_port_base::add_static_event(
 int sc_port_base::bind_count()
 {
     if ( m_bind_info )
-	return m_bind_info->size();
-    else 
+        return m_bind_info->size();
+    
 	return interface_count();
 }
 
@@ -229,7 +220,7 @@ void
 sc_port_base::report_error( const char* id, const char* add_msg ) const
 {
     std::stringstream msg;
-    if (add_msg != 0)
+    if (add_msg != nullptr)
         msg << add_msg << ": ";
     msg << "port '" << name() << "' (" << kind() << ")";
     SC_REPORT_ERROR( id, msg.str().c_str() );
@@ -242,7 +233,7 @@ sc_port_base::sc_port_base(
     int max_size_, sc_port_policy policy 
 ) : 
     sc_object( sc_gen_unique_name( "port" ) ),
-    m_bind_info(NULL)
+    m_bind_info(nullptr)
 {
     simcontext()->get_port_registry()->insert( this );
     m_bind_info = new sc_bind_info( max_size_, policy );
@@ -252,7 +243,7 @@ sc_port_base::sc_port_base(
     const char* name_, int max_size_, sc_port_policy policy 
 ) : 
     sc_object( name_ ),
-    m_bind_info(NULL)
+    m_bind_info(nullptr)
 {
     simcontext()->get_port_registry()->insert( this );
     m_bind_info = new sc_bind_info( max_size_, policy );
@@ -274,7 +265,7 @@ sc_port_base::~sc_port_base()
 void
 sc_port_base::bind( sc_interface& interface_ )
 {
-    if( m_bind_info == 0 ) {
+    if( m_bind_info == nullptr ) {
         // cannot bind an interface after elaboration
         report_error( SC_ID_BIND_IF_TO_PORT_, "simulation running" );
         return;
@@ -295,7 +286,7 @@ sc_port_base::bind( sc_interface& interface_ )
 void
 sc_port_base::bind( this_type& parent_ )
 {
-    if( m_bind_info == 0 ) {
+    if( m_bind_info == nullptr ) {
         // cannot bind a parent port after elaboration
         report_error( SC_ID_BIND_PORT_TO_PORT_, "simulation running" );
         return;
@@ -348,7 +339,7 @@ void sc_port_base::end_of_simulation()
 int
 sc_port_base::pbind( sc_interface& interface_ )
 {
-    if( m_bind_info == 0 ) {
+    if( m_bind_info == nullptr ) {
         // cannot bind an interface after elaboration
         report_error( SC_ID_BIND_IF_TO_PORT_, "simulation running" );
         return -1;
@@ -365,7 +356,7 @@ sc_port_base::pbind( sc_interface& interface_ )
 int
 sc_port_base::pbind( sc_port_base& parent_ )
 {
-    if( m_bind_info == 0 ) {
+    if( m_bind_info == nullptr ) {
         // cannot bind a parent port after elaboration
         report_error( SC_ID_BIND_PORT_TO_PORT_, "simulation running" );
         return -1;
@@ -386,7 +377,7 @@ void
 sc_port_base::make_sensitive( sc_thread_handle handle_,
 			      sc_event_finder* event_finder_ ) const
 {
-    sc_assert( m_bind_info != 0 );
+    sc_assert( m_bind_info != nullptr );
     m_bind_info->thread_vec.push_back( 
 	new sc_bind_ef( (sc_process_b*)handle_, event_finder_ ) );
 }
@@ -395,7 +386,7 @@ void
 sc_port_base::make_sensitive( sc_method_handle handle_,
 			      sc_event_finder* event_finder_ ) const
 {
-    sc_assert( m_bind_info != 0 );
+    sc_assert( m_bind_info != nullptr );
     m_bind_info->method_vec.push_back( 
 	new sc_bind_ef( (sc_process_b*)handle_, event_finder_ ) );
 }
@@ -407,7 +398,7 @@ int
 sc_port_base::first_parent()
 {
     for( int i = 0; i < m_bind_info->size(); ++ i ) {
-	if( m_bind_info->vec[i]->parent != 0 ) {
+	if( m_bind_info->vec[i]->parent != nullptr ) {
 	    return i;
 	}
     }
@@ -427,8 +418,8 @@ sc_port_base::insert_parent( int i )
     // Note that the zeroing of the parent pointer must occur before this
     // test
 
-    vec[i]->parent = 0;
-    if ( parent->m_bind_info->vec.size() == 0 ) return;
+    vec[i]->parent = nullptr;
+    if ( parent->m_bind_info->vec.empty() ) return;
 
     vec[i]->iface = parent->m_bind_info->vec[0]->iface;
     int n = parent->m_bind_info->size() - 1;
@@ -445,7 +436,7 @@ sc_port_base::insert_parent( int i )
 	// insert parent interfaces into the bind vector
 	for( int k = i + 1; k <= i + n; ++ k ) {
 	    vec[k]->iface = parent->m_bind_info->vec[k - i]->iface;
-	    vec[k]->parent = 0;
+	    vec[k]->parent = nullptr;
 	}
     }
 }
@@ -458,7 +449,7 @@ sc_port_base::complete_binding()
 {
     // IF BINDING HAS ALREADY BEEN COMPLETED IGNORE THIS CALL:
 
-    sc_assert( m_bind_info != 0 );
+    sc_assert( m_bind_info != nullptr );
     if( m_bind_info->complete ) {
         return;
     }
@@ -479,7 +470,7 @@ sc_port_base::complete_binding()
         sc_interface* iface = m_bind_info->vec[j]->iface;
 
 	// if the interface is zero this was for an unbound port.
-	if ( iface == 0 ) continue;
+	if ( iface == nullptr ) continue;
 
 	// add (cache) the interface
         if( j > m_bind_info->last_add ) {
@@ -495,7 +486,7 @@ sc_port_base::complete_binding()
         size = m_bind_info->method_vec.size();
         for( int k = 0; k < size; ++ k ) {
             sc_bind_ef* p = m_bind_info->method_vec[k];
-            const sc_event& event = ( p->event_finder != 0 )
+            const sc_event& event = ( p->event_finder != nullptr )
                                   ? p->event_finder->find_event(iface)
                                   : iface->default_event();
             p->handle->add_static_event( event );
@@ -505,7 +496,7 @@ sc_port_base::complete_binding()
         size = m_bind_info->thread_vec.size();
         for( int k = 0; k < size; ++ k ) {
             sc_bind_ef* p = m_bind_info->thread_vec[k];
-            const sc_event& event = ( p->event_finder != 0 )
+            const sc_event& event = ( p->event_finder != nullptr )
                                   ? p->event_finder->find_event(iface)
                                   : iface->default_event();
             p->handle->add_static_event( event );
@@ -580,7 +571,7 @@ sc_port_base::free_binding()
 void
 sc_port_base::construction_done()
 {
-    sc_module* parent = static_cast<sc_module*>( get_parent_object() );
+    auto* parent = dynamic_cast<sc_module*>( get_parent_object() );
     sc_object::hierarchy_scope scope( parent );
     before_end_of_elaboration();
 }
@@ -588,11 +579,11 @@ sc_port_base::construction_done()
 void
 sc_port_base::elaboration_done()
 {
-    sc_assert( m_bind_info != 0 && m_bind_info->complete );
+    sc_assert( m_bind_info != nullptr && m_bind_info->complete );
     delete m_bind_info;
-    m_bind_info = 0;
+    m_bind_info = nullptr;
 
-    sc_module* parent = static_cast<sc_module*>( get_parent_object() );
+    auto* parent = dynamic_cast<sc_module*>( get_parent_object() );
     sc_object::hierarchy_scope scope( parent );
     end_of_elaboration();
 }
@@ -600,7 +591,7 @@ sc_port_base::elaboration_done()
 void
 sc_port_base::start_simulation()
 {
-    sc_module* parent = static_cast<sc_module*>( get_parent_object() );
+    auto* parent = dynamic_cast<sc_module*>( get_parent_object() );
     sc_object::hierarchy_scope scope( parent );
     start_of_simulation();
 }
@@ -608,7 +599,7 @@ sc_port_base::start_simulation()
 void
 sc_port_base::simulation_done()
 {
-    sc_module* parent = static_cast<sc_module*>( get_parent_object() );
+    auto* parent = dynamic_cast<sc_module*>( get_parent_object() );
     sc_object::hierarchy_scope scope( parent );
     end_of_simulation();
 }
@@ -646,7 +637,7 @@ sc_port_registry::insert( sc_port_base* port_ )
 
     // append the port to the current module's vector of ports
     sc_module* curr_module = m_simc->hierarchy_curr();
-    if( curr_module == 0 ) {
+    if( curr_module == nullptr ) {
         port_->report_error( SC_ID_PORT_OUTSIDE_MODULE_ );
         return;
     }
@@ -680,7 +671,6 @@ sc_port_registry::remove( sc_port_base* port_ )
 
 sc_port_registry::sc_port_registry( sc_simcontext& simc_ )
 : m_construction_done(0),
-  m_port_vec(),
   m_simc( &simc_ )
 {
 }
@@ -689,8 +679,7 @@ sc_port_registry::sc_port_registry( sc_simcontext& simc_ )
 // destructor
 
 sc_port_registry::~sc_port_registry()
-{
-}
+= default;
 
 // called when construction is done
 

@@ -113,11 +113,11 @@ sc_handle_exception()
     // everything is an sc_report now
     catch( sc_report & rpt )
     {
-        sc_report* rpt_p = new sc_report;
+        auto* rpt_p = new sc_report;
         rpt_p->swap( rpt );
         return rpt_p;
     }
-    return 0;
+    return nullptr;
 }
 
 } // namespace sc_core
