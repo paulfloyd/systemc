@@ -445,26 +445,26 @@ sc_string_old::fmt_length()const
 {
     unsigned result=0;
     if((*this)[0]!='%')
-	return 0;
+        return 0;
     
-	result++;
+    result++;
     if(is_delimiter("-+0 #",result)) // flags
-	result++;
+        result++;
     while(is_delimiter("0123456789*",result)) // width
-	result++;
+        result++;
     if(rep->str[result]=='.') // precision
     {
-	result++;
-	unsigned old_result = result;
-	while(is_delimiter("0123456789*",result)) result++;
-	if(old_result == result) //error in format
-	    return 0;
+        result++;
+        unsigned old_result = result;
+        while(is_delimiter("0123456789*",result)) result++;
+        if(old_result == result) //error in format
+            return 0;
     }
     if(is_delimiter("hlL",result)) result++; // I64 is not supported
     if(is_delimiter("cCdiouxXeEfgGnpsS",result)) 
-	result++;
+        result++;
     else // error in format
-	return 0;
+        return 0;
     return result;
 }
 

@@ -376,9 +376,9 @@ sc_attr_base*
 sc_object::remove_attribute( const std::string& name_ )
 {
     if ( m_attr_cltn_p )
-	return ( m_attr_cltn_p->remove( name_ ) );
+        return ( m_attr_cltn_p->remove( name_ ) );
     
-	return nullptr;
+    return nullptr;
 }
 
 
@@ -398,9 +398,9 @@ int
 sc_object::num_attributes() const
 {
     if ( m_attr_cltn_p )
-	return ( m_attr_cltn_p->size() );
+        return ( m_attr_cltn_p->size() );
     
-	return 0;
+    return 0;
 }
 
 

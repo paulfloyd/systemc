@@ -2019,30 +2019,23 @@ compare_unsigned(small_type us,
                  small_type if_u_signed,
                  small_type if_v_signed)
 {
+    if (us == vs) {
+        if (us == SC_ZERO)
+            return 0;
 
-  if (us == vs) {
+        int cmp_res = vec_skip_and_cmp(und, ud, vnd, vd);
 
-    if (us == SC_ZERO)
-      return 0;
-
-    
-
-      int cmp_res = vec_skip_and_cmp(und, ud, vnd, vd);
-
-      if (us == SC_POS)
-        return cmp_res;
+        if (us == SC_POS)
+            return cmp_res;
       
         return -cmp_res;
-
-    
-  }
-  
+    }
 
     if (us == SC_ZERO)
-      return -vs;
+        return -vs;
 
     if (vs == SC_ZERO)
-      return us;
+        return us;
 
     int cmp_res;
 
@@ -2056,18 +2049,18 @@ compare_unsigned(small_type us,
 
     if (us == SC_NEG) {
 
-      vec_copy(nd, d, ud);
-      vec_complement(nd, d);
-      trim(if_u_signed, unb, nd, d);
-      cmp_res = vec_skip_and_cmp(nd, d, vnd, vd);
+        vec_copy(nd, d, ud);
+        vec_complement(nd, d);
+        trim(if_u_signed, unb, nd, d);
+        cmp_res = vec_skip_and_cmp(nd, d, vnd, vd);
 
     }
     else {
 
-      vec_copy(nd, d, vd);
-      vec_complement(nd, d);
-      trim(if_v_signed, vnb, nd, d);
-      cmp_res = vec_skip_and_cmp(und, ud, nd, d);
+        vec_copy(nd, d, vd);
+        vec_complement(nd, d);
+        trim(if_v_signed, vnb, nd, d);
+        cmp_res = vec_skip_and_cmp(und, ud, nd, d);
 
     }
 
@@ -2076,8 +2069,6 @@ compare_unsigned(small_type us,
 #endif
 
     return cmp_res;
-
-  
 }
 
 

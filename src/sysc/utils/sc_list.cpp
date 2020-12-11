@@ -185,12 +185,11 @@ sc_plist_base::remove( handle_t h )
     if (h == tail)
         return pop_back();
     
-        void* d = h->data;
-        h->prev->next = h->next;
-        h->next->prev = h->prev;
-        delete h;
-        return d;
-    
+    void* d = h->data;
+    h->prev->next = h->next;
+    h->next->prev = h->prev;
+    delete h;
+    return d;
 }
 
 void*

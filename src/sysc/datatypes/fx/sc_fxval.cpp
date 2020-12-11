@@ -641,7 +641,7 @@ sc_fxval_fast::get_bit( int i ) const
     if( ( j += 32 ) >= 0 )
         return ( ( m1 & 1U << j ) != 0 );
     
-        return false;
+    return false;
 }
 
 

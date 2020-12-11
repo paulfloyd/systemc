@@ -211,7 +211,7 @@ int sc_port_base::bind_count()
     if ( m_bind_info )
         return m_bind_info->size();
     
-	return interface_count();
+    return interface_count();
 }
 
 // error reporting

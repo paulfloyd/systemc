@@ -4049,10 +4049,10 @@ operator<(unsigned long u, const sc_signed& v)
 bool
 sc_signed::iszero() const
 {
-  if (sgn == SC_ZERO)
-    return true;
-  if (sgn != SC_NOSIGN)
-    return false;
+    if (sgn == SC_ZERO)
+        return true;
+    if (sgn != SC_NOSIGN)
+        return false;
   
     return check_for_zero(ndigits, digit);
 }
@@ -4061,10 +4061,10 @@ sc_signed::iszero() const
 bool
 sc_signed::sign() const
 {
-  if (sgn == SC_NEG)
-    return true;
-  if (sgn != SC_NOSIGN)
-    return false;
+    if (sgn == SC_NEG)
+        return true;
+    if (sgn != SC_NOSIGN)
+        return false;
   
     return ((digit[ndigits - 1] & one_and_zeros(bit_ord(nbits - 1))) != 0);
 }

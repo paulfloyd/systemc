@@ -2660,15 +2660,15 @@ scfx_rep::set( int i, const scfx_params& params )
 
     if( x.wi() >= size() )
     {
-	if( is_neg() )
-	    return true;
+        if( is_neg() )
+            return true;
 	
-	    resize_to( x.wi() + 1, 1 );
+        resize_to( x.wi() + 1, 1 );
     }
     else if( x.wi() < 0 )
     {
-	resize_to( size() - x.wi(), -1 );
-	x.wi( 0 );
+        resize_to( size() - x.wi(), -1 );
+        x.wi( 0 );
     }
 
     toggle_tc();
@@ -2696,19 +2696,19 @@ bool
 scfx_rep::clear( int i, const scfx_params& params )
 {
     if( ! is_normal() )
-	return false;
+        return false;
 
     scfx_index x = calc_indices( i );
 
     if( x.wi() >= size() )
     {
-	if( ! is_neg() )
-	    return true;
+        if( ! is_neg() )
+            return true;
 	
-	    resize_to( x.wi() + 1, 1 );
+        resize_to( x.wi() + 1, 1 );
     }
     else if( x.wi() < 0 )
-	return true;
+        return true;
 
     toggle_tc();
 
