@@ -453,8 +453,7 @@ sc_thread_process::sc_thread_process( const char* name_p, bool free_host,
 
         // process any reset signal specification:
 
-	opt_p->specify_resets();
-
+        opt_p->specify_resets();
     }
 
     else

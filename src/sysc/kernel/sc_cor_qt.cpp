@@ -192,9 +192,9 @@ sc_cor_pkg_qt::sc_cor_pkg_qt( sc_simcontext* simc )
 : sc_cor_pkg( simc )
 {
     if( ++ instance_count == 1 ) {
-	// initialize the current coroutine
-	sc_assert( curr_cor == nullptr );
-	curr_cor = &main_cor;
+        // initialize the current coroutine
+        sc_assert( curr_cor == nullptr );
+        curr_cor = &main_cor;
     }
 }
 
@@ -204,8 +204,8 @@ sc_cor_pkg_qt::sc_cor_pkg_qt( sc_simcontext* simc )
 sc_cor_pkg_qt::~sc_cor_pkg_qt()
 {
     if( -- instance_count == 0 ) {
-	// cleanup the current coroutine
-	curr_cor = nullptr;
+          // cleanup the current coroutine
+          curr_cor = nullptr;
     }
 }
 
