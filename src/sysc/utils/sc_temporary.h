@@ -76,7 +76,7 @@ class SC_API sc_byte_heap {
     char*  m_end_p;  // End of heap storage.
     char*  m_next_p; // Next heap location to be allocated.
 
-    inline char* allocate( std::size_t bytes_n )
+    char* allocate( std::size_t bytes_n )
     {
         char*   result_p;
         bytes_n = (bytes_n + 7) & ((std::size_t)(-8));
@@ -90,7 +90,7 @@ class SC_API sc_byte_heap {
         return result_p; 
     }
 
-    inline void initialize( std::size_t heap_size=0x100000 )
+    void initialize( std::size_t heap_size=0x100000 )
     {
         delete [] m_bgn_p;
         m_bgn_p = new char[heap_size];
@@ -98,7 +98,7 @@ class SC_API sc_byte_heap {
         m_next_p = m_bgn_p;
     }
 
-	inline std::size_t length()
+   std::size_t length()
 	{
 		return (std::size_t)(m_end_p - m_bgn_p);
 	}
@@ -108,13 +108,13 @@ class SC_API sc_byte_heap {
 	{
 	}
 
-		inline sc_byte_heap( std::size_t heap_size ) :
-	    m_bgn_p(0), m_end_p(0), m_next_p(0)
+   sc_byte_heap( std::size_t heap_size ) :
+       m_bgn_p(nullptr), m_end_p(nullptr), m_next_p()
 	{
 		initialize( heap_size );
 	}
 
-	inline ~sc_byte_heap()
+   ~sc_byte_heap()
 	{
 		delete [] m_bgn_p;
 	}
@@ -166,7 +166,7 @@ class sc_vpool {
 	std::size_t m_wrap;		// Mask to wrap vector index.
 
   public:
-	inline sc_vpool( int log2, T* pool_p=0 );
+   inline sc_vpool( int log2, T* pool_p=nullptr );
 	inline ~sc_vpool();
 	inline T* allocate();
 	inline void reset();
